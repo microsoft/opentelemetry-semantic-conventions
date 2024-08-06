@@ -126,7 +126,6 @@ groups:
       - ref: gen_ai.usage.output_tokens
         brief: The number of tokens used in the completions from OpenAI.
 
-
   - id: span.gen_ai.az.ai.inference.client
     extends: attributes.gen_ai.openai_based
     stability: development
@@ -213,3 +212,4 @@ groups:
           The `error.type` SHOULD match the error code returned by the Generative AI provider or the client library,
           the canonical name of exception that occurred, or another low-cardinality error identifier.
           Instrumentations SHOULD document the list of errors they report.
+
