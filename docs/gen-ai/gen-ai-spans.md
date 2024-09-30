@@ -2,7 +2,7 @@
 linkTitle: Generative AI traces
 --->
 
-# Semantic Conventions for GenAI operations
+# Semantic Conventions for GenAI run operations
 
 **Status**: [Experimental][DocumentStatus]
 
@@ -17,9 +17,33 @@ linkTitle: Generative AI traces
 
 <!-- tocstop -->
 
-A request to an Generative AI is modeled as a span in a trace.
+A run of a Generative AI (GenAI) model is modeled as a span in a trace with
+sub-spans for request spans and function invocation spans.
 
-**Span kind:** MUST always be `CLIENT`.
+**Span kind:** MAY be `CLIENT` or `SERVER`.
+
+## Lifecycle of a GenAI run operation
+The run lifecycle represents a multi-step operation that includes sending a prompt to a Generative AI model and completing the "function calling" loop by iteratively:
+1. Requesting a completion from the model
+2. Streaming in the responses from the model (chat messages or tool calls)
+3. Performing any function calls based on the completion
+4. Sending the results of the function calls back to the model as a new prompt
+5. Repeating the process until the model returns a finished completion or the operation is otherwise cancelled.
+
+> [!NOTE] A model can return multiple chat messages within the "function calling" loop. Each message is considered a separate completion.
+
+This cycle results in the following span structure:
+- **Run span**: Represents the entire lifecycle of a GenAI run operation.
+  - **Request span**: Represents the prompt sent to the model.
+    - **Prompt event**: Represents a single prompt sent to the model.
+    - **Response span**: Represents the completion received from the model.
+        - **Message event**: Represents a single message received from the model.
+        - **Tool call event**: Represents a tool call received from the model.
+  - **Function invocation span**: Represents the function call made based on the completion.
+    - **Function result event**: Represents the prompt sent to the model based on the completion.
+
+The following diagram illustrates the lifecycle of a GenAI run operation:
+![GenAI run operation lifecycle](genai_run_operation_lifecycle.png)
 
 ## Name
 
@@ -29,16 +53,30 @@ Semantic conventions for individual GenAI systems and frameworks MAY specify dif
 
 ## Configuration
 
-Instrumentations for Generative AI clients MAY capture prompts and completions.
-Instrumentations that support it, MUST offer the ability to turn off capture of prompts and completions. This is for three primary reasons:
+Instrumentations for Generative AI clients MAY capture prompts, completions, and function results.
+Instrumentations that support it, MUST offer the ability to turn off capture of prompts, completions, tool call attributes, and tool invocation responses. This is for three primary reasons:
 
 1. Data privacy concerns. End users of GenAI applications may input sensitive information or personally identifiable information (PII) that they do not wish to be sent to a telemetry backend.
 2. Data size concerns. Although there is no specified limit to sizes, there are practical limitations in programming languages and telemetry systems. Some GenAI systems allow for extremely large context windows that end users may take full advantage of.
 3. Performance concerns. Sending large amounts of data to a telemetry backend may cause performance issues for the application.
 
-## GenAI attributes
+## GenAI run span
+The run span represents the entire lifecycle of a GenAI run operation. It starts when the initial prompt is sent to the model and ends when the operation is completed or cancelled.
 
-These attributes track input data and metadata for a request to an GenAI model. Each attribute represents a concept that is common to most Generative AI clients.
+### GenAI run span attributes
+
+| Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
+|---|---|---|---|---|---|
+| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. It is always `run` | `run` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. A run _may_ consist of calls to multiple GenAI systems, so this is optional | `openai` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`error.type`](/docs/attributes-registry/error.md) | string | Describes a class of error the operation ended with.| `timeout`; `java.net.UnknownHostException`; `server_certificate_invalid`; `500` | `Conditionally Required` if the operation ended in an error | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
+| [`server.port`](/docs/attributes-registry/server.md) | int | GenAI server port. | `80`; `8080`; `443` | `Conditionally Required` If `server.address` is set. | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
+| [`server.address`](/docs/attributes-registry/server.md) | string | GenAI server address. | `example.com`; `10.1.2.80`; `/tmp/my.sock` | `Recommended` | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
+
+## GenAI request span
+The GenAI request span should track input data and metadata for a request to an GenAI model. Each attribute with the span represents a concept that is common to most Generative AI clients.
+
+## GenAI request span attributes
 
 <!-- semconv trace.gen_ai.client -->
 <!-- NOTE: THIS TEXT IS AUTOGENERATED. DO NOT EDIT BY HAND. -->
@@ -62,8 +100,6 @@ These attributes track input data and metadata for a request to an GenAI model. 
 | [`gen_ai.request.top_k`](/docs/attributes-registry/gen-ai.md) | double | The top_k sampling setting for the GenAI request. | `1.0` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.request.top_p`](/docs/attributes-registry/gen-ai.md) | double | The top_p sampling setting for the GenAI request. | `1.0` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.response.finish_reasons`](/docs/attributes-registry/gen-ai.md) | string[] | Array of reasons the model stopped generating tokens, corresponding to each generation received. | `["stop"]`; `["stop", "length"]` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| [`gen_ai.response.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier for the completion. | `chatcmpl-123` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| [`gen_ai.response.model`](/docs/attributes-registry/gen-ai.md) | string | The name of the model that generated the response. [6] | `gpt-4-0613` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.usage.input_tokens`](/docs/attributes-registry/gen-ai.md) | int | The number of tokens used in the GenAI input (prompt). | `100` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.usage.output_tokens`](/docs/attributes-registry/gen-ai.md) | int | The number of tokens used in the GenAI response (completion). | `180` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`server.address`](/docs/attributes-registry/server.md) | string | GenAI server address. [7] | `example.com`; `10.1.2.80`; `/tmp/my.sock` | `Recommended` | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
@@ -118,16 +154,16 @@ Instrumentations SHOULD document the list of errors they report.
 | `openai` | OpenAI | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `vertex_ai` | Vertex AI | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
-
-
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 <!-- END AUTOGENERATED TEXT -->
 <!-- endsemconv -->
 
-## Events
+### GenAI request span events
 
-In the lifetime of a GenAI span, an event for prompts sent and completions received MAY be created, depending on the configuration of the instrumentation.
+In the lifetime of a GenAI request span, an event for prompts sent and completions received (i.e., messages and tool calls)  MAY be created, depending on the configuration of the instrumentation.
+
+To support streaming scenarios, the events for completion events SHOULD be created as soon as a complete message or tool call is received from the GenAI model.
 
 <!-- semconv gen_ai.content.prompt -->
 <!-- NOTE: THIS TEXT IS AUTOGENERATED. DO NOT EDIT BY HAND. -->
@@ -145,7 +181,30 @@ The event name MUST be `gen_ai.content.prompt`.
 **[1]:** It's RECOMMENDED to format prompts as JSON string matching [OpenAI messages format](https://platform.openai.com/docs/guides/text-generation)
 
 
+## GenAI response span
+The GenAI response span should track the completions received from a GenAI model. Each attribute with the span represents a concept that is common to most Generative AI clients.
 
+### GenAI response span attributes
+
+<!-- semconv trace.gen_ai.client -->
+<!-- NOTE: THIS TEXT IS AUTOGENERATED. DO NOT EDIT BY HAND. -->
+<!-- see templates/registry/markdown/snippet.md.j2 -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-capture -->
+<!-- markdownlint-disable -->
+
+| Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
+|---|---|---|---|---|---|
+| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `response` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [3] | `openai` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`error.type`](/docs/attributes-registry/error.md) | string | Describes a class of error the operation ended with. [4] | `timeout`; `java.net.UnknownHostException`; `server_certificate_invalid`; `500` | `Conditionally Required` if the operation ended in an error | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
+| [`server.port`](/docs/attributes-registry/server.md) | int | GenAI server port. [5] | `80`; `8080`; `443` | `Conditionally Required` If `server.address` is set. | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
+| [`gen_ai.response.finish_reasons`](/docs/attributes-registry/gen-ai.md) | string[] | Array of reasons the model stopped generating tokens, corresponding to each generation received. | `["stop"]`; `["stop", "length"]` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.response.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier for the completion. | `chatcmpl-123` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.response.model`](/docs/attributes-registry/gen-ai.md) | string | The name of the model that generated the response. [6] | `gpt-4-0613` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`server.address`](/docs/attributes-registry/server.md) | string | GenAI server address. [7] | `example.com`; `10.1.2.80`; `/tmp/my.sock` | `Recommended` | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
+
+### GenAI response span events
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
@@ -159,15 +218,22 @@ The event name MUST be `gen_ai.content.prompt`.
 <!-- markdownlint-capture -->
 <!-- markdownlint-disable -->
 
-The event name MUST be `gen_ai.content.completion`.
+The event name MUST be `gen_ai.content.message`.
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| [`gen_ai.completion`](/docs/attributes-registry/gen-ai.md) | string | The full response received from the GenAI model. [1] | `[{'role': 'assistant', 'content': 'The capital of France is Paris.'}]` | `Conditionally Required` if and only if corresponding event is enabled | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.completion`](/docs/attributes-registry/gen-ai.md) | string | A single completed message received from the GenAI model. [1] | `{'role': 'assistant', 'content': 'The capital of France is Paris.'}` | `Conditionally Required` if and only if corresponding event is enabled |
 
 **[1]:** It's RECOMMENDED to format completions as JSON string matching [OpenAI messages format](https://platform.openai.com/docs/guides/text-generation)
 
 
+The event name MUST be `gen_ai.content.tool_call`.
+
+| Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
+|---|---|---|---|---|---|
+| [`gen_ai.tool_call.id`](/docs/attributes-registry/gen-ai.md) | string | The id of the tool call so it can be correlated with a tool result. [6] | `cab85264-94b0-4ee3-9684-2e7d96c80f0c` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.tool_call.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the tool that is being called. [6] | `get_weather` | `Conditionally Required` if and only if corresponding attribute is enabled | ![Experimental](https://img.shields.io/badge/-experimental-blue) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.tool_call.arguments`](/docs/attributes-registry/gen-ai.md) | string | The parameters for the called tool. [6] | `{\n\"location\": \"Boston, MA\"\n}` | `Conditionally Required` if and only if corresponding attribute is enabled | ![Experimental](https://img.shields.io/badge/-experimental-blue)| ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
 
 <!-- markdownlint-restore -->
@@ -176,3 +242,27 @@ The event name MUST be `gen_ai.content.completion`.
 <!-- endsemconv -->
 
 [DocumentStatus]: https://github.com/open-telemetry/opentelemetry-specification/tree/v1.22.0/specification/document-status.md
+
+
+## Tool invocation span
+If a tool call is requested by the model, a tool result span should be created to represent the result of the tool call. The tool result span is nested within the run span and happens sequentially after the chat completion.
+
+### Tool invocation span attributes
+
+| Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
+|---|---|---|---|---|---|
+| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. It is always `tool_invocation` | `tool_invocation` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`error.type`](/docs/attributes-registry/error.md) | string | Describes a class of error the operation ended with. [4] | `timeout`; `java.net.UnknownHostException`; `server_certificate_invalid`; `500` | `Conditionally Required` if the operation ended in an error | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
+| [`gen_ai.request.tool.id`](/docs/attributes-registry/gen-ai.md) | string | The id of the tool invocation so it can be correlated with the tool call. [6] | `cab85264-94b0-4ee3-9684-2e7d96c80f0c` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+
+> [!Note] Nested within the tool result span should be any events that are generated by the tool invocation. These events should follow general OpenTelemetry semantic conventions.
+
+### Tool invocation span events
+
+In the lifetime of a tool result span, an event for the result, depending on the configuration of the instrumentation.
+
+The event name MUST be `gen_ai.content.tool_result`.
+
+| Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
+|---|---|---|---|---|---|
+| [`gen_ai.tool_result`](/docs/attributes-registry/gen-ai.md) | string | The name of the tool that is being called. [6] | `{"temperature": "72F"}` | `Conditionally Required` if and only if corresponding event is enabled | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
