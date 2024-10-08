@@ -39,8 +39,14 @@ groups:
         deprecated: Replaced by `gen_ai.request.seed` attribute.
         brief: "Deprecated, use `gen_ai.request.seed`."
         examples: [100]
+      - id: gen_ai.request.max_tokens
+        stability: experimental
+        type: int
+        brief: "Deprecated, use `gen_ai.request.max_tokens` instead."
+        deprecated: "Replaced by `gen_ai.request.max_completion_tokens` attribute."
+        examples: [42]
       - id: gen_ai.openai.request.response_format
-        stability: development
+        stability: experimental
         type:
           members:
             - id: text

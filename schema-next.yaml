@@ -2,6 +2,14 @@ file_format: 1.1.0
 schema_url: https://opentelemetry.io/schemas/1.31.0
 versions:
   next:
+    all:
+      changes:
+        # https://github.com/open-telemetry/semantic-conventions/pull/TODO
+        - rename_attributes:
+            attribute_map:
+              gen_ai.request.max_tokens: gen_ai.request.max_output_tokens
+              gen_ai.response.id: gen_ai.message.id
+
   1.33.0:
     all:
       changes:

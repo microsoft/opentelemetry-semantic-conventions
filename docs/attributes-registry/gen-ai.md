@@ -19,12 +19,15 @@ This document defines the attributes used to describe telemetry in the context o
 | <a id="gen-ai-agent-name" href="#gen-ai-agent-name">`gen_ai.agent.name`</a> | string | Human-readable name of the GenAI agent provided by the application. | `Math Tutor`; `Fiction Writer` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-data-source-id" href="#gen-ai-data-source-id">`gen_ai.data_source.id`</a> | string | The data source identifier. [1] | `H7STPQYOND` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-evaluation-score" href="#gen-ai-evaluation-score">`gen_ai.evaluation.score`</a> | double | The score calculated by the evaluator for the GenAI response. [2] | `0.42` | ![Development](https://img.shields.io/badge/-development-blue) |
-| <a id="gen-ai-operation-name" href="#gen-ai-operation-name">`gen_ai.operation.name`</a> | string | The name of the operation being performed. [3] | `chat`; `generate_content`; `text_completion` | ![Development](https://img.shields.io/badge/-development-blue) |
-| <a id="gen-ai-output-type" href="#gen-ai-output-type">`gen_ai.output.type`</a> | string | Represents the content type requested by the client. [4] | `text`; `json`; `image` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-message-id" href="#gen-ai-message-id">`gen_ai.message.id`</a> | string | Identifies message sent to or received from Generative AI model or agent. [3] | `msg_sLMd7grQfjFXgu5ZeHCXmBr7`; `chatcmpl-123` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-message-status" href="#gen-ai-message-status">`gen_ai.message.status`</a> | string | The status of the message. | `in_progress`; `completed`; `incomplete` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-operation-name" href="#gen-ai-operation-name">`gen_ai.operation.name`</a> | string | The name of the operation being performed. [4] | `chat`; `generate_content`; `text_completion` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-output-type" href="#gen-ai-output-type">`gen_ai.output.type`</a> | string | Represents the content type requested by the client. [5] | `text`; `json`; `image` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-request-choice-count" href="#gen-ai-request-choice-count">`gen_ai.request.choice.count`</a> | int | The target number of candidate completions to return. | `3` | ![Development](https://img.shields.io/badge/-development-blue) |
-| <a id="gen-ai-request-encoding-formats" href="#gen-ai-request-encoding-formats">`gen_ai.request.encoding_formats`</a> | string[] | The encoding formats requested in an embeddings operation, if specified. [5] | `["base64"]`; `["float", "binary"]` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-request-encoding-formats" href="#gen-ai-request-encoding-formats">`gen_ai.request.encoding_formats`</a> | string[] | The encoding formats requested in an embeddings operation, if specified. [6] | `["base64"]`; `["float", "binary"]` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-request-frequency-penalty" href="#gen-ai-request-frequency-penalty">`gen_ai.request.frequency_penalty`</a> | double | The frequency penalty setting for the GenAI request. | `0.1` | ![Development](https://img.shields.io/badge/-development-blue) |
-| <a id="gen-ai-request-max-tokens" href="#gen-ai-request-max-tokens">`gen_ai.request.max_tokens`</a> | int | The maximum number of tokens the model generates for a request. | `100` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-request-max-input-tokens" href="#gen-ai-request-max-input-tokens">`gen_ai.request.max_input_tokens`</a> | int | The maximum number of prompt tokens the model can use. | `100` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-request-max-output-tokens" href="#gen-ai-request-max-output-tokens">`gen_ai.request.max_output_tokens`</a> | int | The maximum number of completion tokens the model generates in response. | `100` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-request-model" href="#gen-ai-request-model">`gen_ai.request.model`</a> | string | The name of the GenAI model a request is being made to. | `gpt-4` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-request-presence-penalty" href="#gen-ai-request-presence-penalty">`gen_ai.request.presence_penalty`</a> | double | The presence penalty setting for the GenAI request. | `0.1` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-request-seed" href="#gen-ai-request-seed">`gen_ai.request.seed`</a> | int | Requests with same seed value more likely to return same result. | `100` | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -35,12 +38,15 @@ This document defines the attributes used to describe telemetry in the context o
 | <a id="gen-ai-response-finish-reasons" href="#gen-ai-response-finish-reasons">`gen_ai.response.finish_reasons`</a> | string[] | Array of reasons the model stopped generating tokens, corresponding to each generation received. | `["stop"]`; `["stop", "length"]` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-response-id" href="#gen-ai-response-id">`gen_ai.response.id`</a> | string | The unique identifier for the completion. | `chatcmpl-123` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-response-model" href="#gen-ai-response-model">`gen_ai.response.model`</a> | string | The name of the model that generated the response. | `gpt-4-0613` | ![Development](https://img.shields.io/badge/-development-blue) |
-| <a id="gen-ai-system" href="#gen-ai-system">`gen_ai.system`</a> | string | The Generative AI product as identified by the client or server instrumentation. [6] | `openai` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-system" href="#gen-ai-system">`gen_ai.system`</a> | string | The Generative AI product as identified by the client or server instrumentation. [7] | `openai` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-thread-id" href="#gen-ai-thread-id">`gen_ai.thread.id`</a> | string | The unique identifier of the thread. | `thread_ggguJ0iZXRPjUnCy9vT9Fdvs` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-thread-run-id" href="#gen-ai-thread-run-id">`gen_ai.thread.run.id`</a> | string | The unique identifier of the thread run. | `run_ep8IxBKdM06Mv338KNyo6EKP` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-thread-run-status" href="#gen-ai-thread-run-status">`gen_ai.thread.run.status`</a> | string | The thread run status | `queued`; `in_progress`; `completed` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-token-type" href="#gen-ai-token-type">`gen_ai.token.type`</a> | string | The type of token being counted. | `input`; `output` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-tool-call-id" href="#gen-ai-tool-call-id">`gen_ai.tool.call.id`</a> | string | The tool call identifier. | `call_mszuSIzqtI65i1wAUOE8w5H4` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-tool-description" href="#gen-ai-tool-description">`gen_ai.tool.description`</a> | string | The tool description. | `Multiply two numbers` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-tool-name" href="#gen-ai-tool-name">`gen_ai.tool.name`</a> | string | Name of the tool utilized by the agent. | `Flights` | ![Development](https://img.shields.io/badge/-development-blue) |
-| <a id="gen-ai-tool-type" href="#gen-ai-tool-type">`gen_ai.tool.type`</a> | string | Type of the tool utilized by the agent [7] | `function`; `extension`; `datastore` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-tool-type" href="#gen-ai-tool-type">`gen_ai.tool.type`</a> | string | Type of the tool utilized by the agent [8] | `function`; `extension`; `datastore` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-usage-input-tokens" href="#gen-ai-usage-input-tokens">`gen_ai.usage.input_tokens`</a> | int | The number of tokens used in the GenAI input (prompt). | `100` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-usage-output-tokens" href="#gen-ai-usage-output-tokens">`gen_ai.usage.output_tokens`</a> | int | The number of tokens used in the GenAI response (completion). | `180` | ![Development](https://img.shields.io/badge/-development-blue) |
 
@@ -48,15 +54,18 @@ This document defines the attributes used to describe telemetry in the context o
 
 **[2] `gen_ai.evaluation.score`:** Semantic conventions describing GenAI evaluation telemetry SHOULD document the scoring system and method used to calculate the score.
 
-**[3] `gen_ai.operation.name`:** If one of the predefined values applies, but specific system uses a different name it's RECOMMENDED to document it in the semantic conventions for specific GenAI system and use system-specific name in the instrumentation. If a different name is not documented, instrumentation libraries SHOULD use applicable predefined value.
+**[3] `gen_ai.message.id`:** For inference operations such as `chat` or `text_completion`, it SHOULD be the completion identifier returned by the GenAI system and may not be unique if multiple choices are returned.
+If message history is managed by the application, agent, or framework, it SHOULD match the identifier used by the message history management system.
 
-**[4] `gen_ai.output.type`:** This attribute SHOULD be used when the client requests output of a specific type. The model may return zero or more outputs of this type.
+**[4] `gen_ai.operation.name`:** If one of the predefined values applies, but specific system uses a different name it's RECOMMENDED to document it in the semantic conventions for specific GenAI system and use system-specific name in the instrumentation. If a different name is not documented, instrumentation libraries SHOULD use applicable predefined value.
+
+**[5] `gen_ai.output.type`:** This attribute SHOULD be used when the client requests output of a specific type. The model may return zero or more outputs of this type.
 This attribute specifies the output modality and not the actual output format. For example, if an image is requested, the actual output could be a URL pointing to an image file.
 Additional output format details may be recorded in the future in the `gen_ai.output.{type}.*` attributes.
 
-**[5] `gen_ai.request.encoding_formats`:** In some GenAI systems the encoding formats are called embedding types. Also, some GenAI systems only accept a single format per request.
+**[6] `gen_ai.request.encoding_formats`:** In some GenAI systems the encoding formats are called embedding types. Also, some GenAI systems only accept a single format per request.
 
-**[6] `gen_ai.system`:** The `gen_ai.system` describes a family of GenAI models with specific model identified
+**[7] `gen_ai.system`:** The `gen_ai.system` describes a family of GenAI models with specific model identified
 by `gen_ai.request.model` and `gen_ai.response.model` attributes.
 
 The actual GenAI product may differ from the one identified by the client.
@@ -68,11 +77,21 @@ attribute may help identify the actual system in use for `openai`.
 For custom model, a custom friendly name SHOULD be used.
 If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 
-**[7] `gen_ai.tool.type`:** Extension: A tool executed on the agent-side to directly call external APIs, bridging the gap between the agent and real-world systems.
+**[8] `gen_ai.tool.type`:** Extension: A tool executed on the agent-side to directly call external APIs, bridging the gap between the agent and real-world systems.
   Agent-side operations involve actions that are performed by the agent on the server or within the agent's controlled environment.
 Function: A tool executed on the client-side, where the agent generates parameters for a predefined function, and the client executes the logic.
   Client-side operations are actions taken on the user's end or within the client application.
 Datastore: A tool used by the agent to access and query structured or unstructured external data for retrieval-augmented tasks or knowledge updates.
+
+---
+
+`gen_ai.message.status` has the following list of well-known values. If one of them applies, then the respective value MUST be used; otherwise, a custom value MAY be used.
+
+| Value  | Description | Stability |
+|---|---|---|
+| `completed` | The message has been completed | ![Development](https://img.shields.io/badge/-development-blue) |
+| `in_progress` | The message is in progress | ![Development](https://img.shields.io/badge/-development-blue) |
+| `incomplete` | The message has ended due to reaching maximum number of input or output tokens | ![Development](https://img.shields.io/badge/-development-blue) |
 
 ---
 
@@ -82,11 +101,31 @@ Datastore: A tool used by the agent to access and query structured or unstructur
 |---|---|---|
 | `chat` | Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `create_agent` | Create GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
+| `create_message` | Create a message in a thread [9] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `create_thread` | Create GenAI thread | ![Development](https://img.shields.io/badge/-development-blue) |
 | `embeddings` | Embeddings operation such as [OpenAI Create embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create) | ![Development](https://img.shields.io/badge/-development-blue) |
-| `execute_tool` | Execute a tool | ![Development](https://img.shields.io/badge/-development-blue) |
+| `execute_tool` | Execute a tool [10] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `generate_content` | Multimodal content generation operation such as [Gemini Generate Content](https://ai.google.dev/api/generate-content) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_agent` | Invoke GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
+| `process_thread_run` | Create and process a thread run on the agent [11] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `start_thread_run` | Create thread run [12] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `submit_tool_outputs` | Submit tool calls results to a run [13] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `text_completion` | Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions) | ![Development](https://img.shields.io/badge/-development-blue) |
+
+**[9]:** This operation SHOULD be used when message creation involves remote call to store this message, but does not result in model generating response. It SHOULD NOT be reported along with `chat`, `text_completion` or other inference operations.
+
+**[10]:** This operation describes the tool execution which usually is a client operation performed by the application code.
+Instrumentations SHOULD record this operation when possible - for example, when they provide convenience methods for executing custom tools or provide built-in tools executed on the client side.
+
+**[11]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs and for operations that involve polling the run status.
+
+**[12]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+Unlike `process_thread_run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
+Instrumentations SHOULD report `process_thread_run` operation instead of `create_thread_run` whenever it is possible.
+
+**[13]:** This operation SHOULD be used when instrumentation can determine that application is submitting the tool call output to the model, for example, when this operation is reported in the context of agent thread run.
+When application is submitting the tool call output with the generic GenAI call such as `chat` or `text_completion`, the instrumentation SHOULD use the corresponding operation name since it cannot reliably determine the intent behind the generic GenAI call.
 
 ---
 
@@ -111,9 +150,9 @@ Datastore: A tool used by the agent to access and query structured or unstructur
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |
 | `deepseek` | DeepSeek | ![Development](https://img.shields.io/badge/-development-blue) |
-| `gcp.gemini` | Gemini [8] | ![Development](https://img.shields.io/badge/-development-blue) |
-| `gcp.gen_ai` | Any Google generative AI endpoint [9] | ![Development](https://img.shields.io/badge/-development-blue) |
-| `gcp.vertex_ai` | Vertex AI [10] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `gcp.gemini` | Gemini [14] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `gcp.gen_ai` | Any Google generative AI endpoint [15] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `gcp.vertex_ai` | Vertex AI [16] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `groq` | Groq | ![Development](https://img.shields.io/badge/-development-blue) |
 | `ibm.watsonx.ai` | IBM Watsonx AI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `mistral_ai` | Mistral AI | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -121,11 +160,26 @@ Datastore: A tool used by the agent to access and query structured or unstructur
 | `perplexity` | Perplexity | ![Development](https://img.shields.io/badge/-development-blue) |
 | `xai` | xAI | ![Development](https://img.shields.io/badge/-development-blue) |
 
-**[8]:** This refers to the 'generativelanguage.googleapis.com' endpoint. Also known as the AI Studio API. May use common attributes prefixed with 'gcp.gen_ai.'.
+**[14]:** This refers to the 'generativelanguage.googleapis.com' endpoint. Also known as the AI Studio API. May use common attributes prefixed with 'gcp.gen_ai.'.
 
-**[9]:** May be used when specific backend is unknown. May use common attributes prefixed with 'gcp.gen_ai.'.
+**[15]:** May be used when specific backend is unknown. May use common attributes prefixed with 'gcp.gen_ai.'.
 
-**[10]:** This refers to the 'aiplatform.googleapis.com' endpoint. May use common attributes prefixed with 'gcp.gen_ai.'.
+**[16]:** This refers to the 'aiplatform.googleapis.com' endpoint. May use common attributes prefixed with 'gcp.gen_ai.'.
+
+---
+
+`gen_ai.thread.run.status` has the following list of well-known values. If one of them applies, then the respective value MUST be used; otherwise, a custom value MAY be used.
+
+| Value  | Description | Stability |
+|---|---|---|
+| `canceled` | The thread run has been canceled | ![Development](https://img.shields.io/badge/-development-blue) |
+| `completed` | The thread run has completed | ![Development](https://img.shields.io/badge/-development-blue) |
+| `expired` | The thread run has expired | ![Development](https://img.shields.io/badge/-development-blue) |
+| `failed` | The thread run has failed | ![Development](https://img.shields.io/badge/-development-blue) |
+| `in_progress` | The thread run is in progress | ![Development](https://img.shields.io/badge/-development-blue) |
+| `incomplete` | The thread run has ended due to reaching maximum number of input or output tokens | ![Development](https://img.shields.io/badge/-development-blue) |
+| `queued` | The thread run is queued | ![Development](https://img.shields.io/badge/-development-blue) |
+| `requires_action` | The thread run requires action. | ![Development](https://img.shields.io/badge/-development-blue) |
 
 ---
 
@@ -174,6 +228,7 @@ Describes deprecated `gen_ai.openai` attributes.
 |---|---|---|---|---|
 | <a id="gen-ai-openai-request-response-format" href="#gen-ai-openai-request-response-format">`gen_ai.openai.request.response_format`</a> | string | Deprecated, use `gen_ai.output.type`. | `text`; `json_object`; `json_schema` | ![Deprecated](https://img.shields.io/badge/-deprecated-red)<br>Replaced by `gen_ai.output.type`. |
 | <a id="gen-ai-openai-request-seed" href="#gen-ai-openai-request-seed">`gen_ai.openai.request.seed`</a> | int | Deprecated, use `gen_ai.request.seed`. | `100` | ![Deprecated](https://img.shields.io/badge/-deprecated-red)<br>Replaced by `gen_ai.request.seed` attribute. |
+| <a id="gen-ai-request-max-tokens" href="#gen-ai-request-max-tokens">`gen_ai.request.max_tokens`</a> | int | Deprecated, use `gen_ai.request.max_tokens` instead. | `42` | ![Deprecated](https://img.shields.io/badge/-deprecated-red)<br>Replaced by `gen_ai.request.max_completion_tokens` attribute. |
 
 ---
 
