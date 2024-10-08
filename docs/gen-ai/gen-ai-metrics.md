@@ -93,9 +93,29 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 |---|---|---|
 | `chat` | Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `create_agent` | Create GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
+| `create_message` | Create a message in a thread [5] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `create_thread` | Create GenAI thread | ![Development](https://img.shields.io/badge/-development-blue) |
 | `embeddings` | Embeddings operation such as [OpenAI Create embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create) | ![Development](https://img.shields.io/badge/-development-blue) |
-| `execute_tool` | Execute a tool | ![Development](https://img.shields.io/badge/-development-blue) |
+| `execute_tool` | Execute a tool [6] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `process_thread_run` | Create and process a thread run on the agent [7] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `start_thread_run` | Create thread run [8] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `submit_tool_outputs` | Submit tool calls results to a run [9] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `text_completion` | Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions) | ![Development](https://img.shields.io/badge/-development-blue) |
+
+**[5]:** This operation SHOULD be used when message creation involves remote call to store this message, but does not result in model generating response. It SHOULD NOT be reported along with `chat`, `text_completion` or other inference operations.
+
+**[6]:** This operation describes the tool execution which usually is a client operation performed by the application code.
+Instrumentations SHOULD record this operation when possible - for example, when they provide convenience methods for executing custom tools or provide built-in tools executed on the client side.
+
+**[7]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs and for operations that involve polling the run status.
+
+**[8]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+Unlike `process_thread_run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
+Instrumentations SHOULD report `process_thread_run` operation instead of `create_thread_run` whenever it is possible.
+
+**[9]:** This operation SHOULD be used when instrumentation can determine that application is submitting the tool call output to the model, for example, when this operation is reported in the context of agent thread run.
+When application is submitting the tool call output with the generic GenAI call such as `chat` or `text_completion`, the instrumentation SHOULD use the corresponding operation name since it cannot reliably determine the intent behind the generic GenAI call.
 
 ---
 
@@ -197,9 +217,29 @@ Instrumentations SHOULD document the list of errors they report.
 |---|---|---|
 | `chat` | Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `create_agent` | Create GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
+| `create_message` | Create a message in a thread [6] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `create_thread` | Create GenAI thread | ![Development](https://img.shields.io/badge/-development-blue) |
 | `embeddings` | Embeddings operation such as [OpenAI Create embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create) | ![Development](https://img.shields.io/badge/-development-blue) |
-| `execute_tool` | Execute a tool | ![Development](https://img.shields.io/badge/-development-blue) |
+| `execute_tool` | Execute a tool [7] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `process_thread_run` | Create and process a thread run on the agent [8] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `start_thread_run` | Create thread run [9] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `submit_tool_outputs` | Submit tool calls results to a run [10] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `text_completion` | Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions) | ![Development](https://img.shields.io/badge/-development-blue) |
+
+**[6]:** This operation SHOULD be used when message creation involves remote call to store this message, but does not result in model generating response. It SHOULD NOT be reported along with `chat`, `text_completion` or other inference operations.
+
+**[7]:** This operation describes the tool execution which usually is a client operation performed by the application code.
+Instrumentations SHOULD record this operation when possible - for example, when they provide convenience methods for executing custom tools or provide built-in tools executed on the client side.
+
+**[8]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs and for operations that involve polling the run status.
+
+**[9]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+Unlike `process_thread_run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
+Instrumentations SHOULD report `process_thread_run` operation instead of `create_thread_run` whenever it is possible.
+
+**[10]:** This operation SHOULD be used when instrumentation can determine that application is submitting the tool call output to the model, for example, when this operation is reported in the context of agent thread run.
+When application is submitting the tool call output with the generic GenAI call such as `chat` or `text_completion`, the instrumentation SHOULD use the corresponding operation name since it cannot reliably determine the intent behind the generic GenAI call.
 
 ---
 
@@ -299,9 +339,29 @@ Instrumentations SHOULD document the list of errors they report.
 |---|---|---|
 | `chat` | Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `create_agent` | Create GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
+| `create_message` | Create a message in a thread [6] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `create_thread` | Create GenAI thread | ![Development](https://img.shields.io/badge/-development-blue) |
 | `embeddings` | Embeddings operation such as [OpenAI Create embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create) | ![Development](https://img.shields.io/badge/-development-blue) |
-| `execute_tool` | Execute a tool | ![Development](https://img.shields.io/badge/-development-blue) |
+| `execute_tool` | Execute a tool [7] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `process_thread_run` | Create and process a thread run on the agent [8] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `start_thread_run` | Create thread run [9] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `submit_tool_outputs` | Submit tool calls results to a run [10] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `text_completion` | Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions) | ![Development](https://img.shields.io/badge/-development-blue) |
+
+**[6]:** This operation SHOULD be used when message creation involves remote call to store this message, but does not result in model generating response. It SHOULD NOT be reported along with `chat`, `text_completion` or other inference operations.
+
+**[7]:** This operation describes the tool execution which usually is a client operation performed by the application code.
+Instrumentations SHOULD record this operation when possible - for example, when they provide convenience methods for executing custom tools or provide built-in tools executed on the client side.
+
+**[8]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs and for operations that involve polling the run status.
+
+**[9]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+Unlike `process_thread_run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
+Instrumentations SHOULD report `process_thread_run` operation instead of `create_thread_run` whenever it is possible.
+
+**[10]:** This operation SHOULD be used when instrumentation can determine that application is submitting the tool call output to the model, for example, when this operation is reported in the context of agent thread run.
+When application is submitting the tool call output with the generic GenAI call such as `chat` or `text_completion`, the instrumentation SHOULD use the corresponding operation name since it cannot reliably determine the intent behind the generic GenAI call.
 
 ---
 
@@ -388,9 +448,29 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 |---|---|---|
 | `chat` | Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `create_agent` | Create GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
+| `create_message` | Create a message in a thread [5] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `create_thread` | Create GenAI thread | ![Development](https://img.shields.io/badge/-development-blue) |
 | `embeddings` | Embeddings operation such as [OpenAI Create embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create) | ![Development](https://img.shields.io/badge/-development-blue) |
-| `execute_tool` | Execute a tool | ![Development](https://img.shields.io/badge/-development-blue) |
+| `execute_tool` | Execute a tool [6] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `process_thread_run` | Create and process a thread run on the agent [7] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `start_thread_run` | Create thread run [8] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `submit_tool_outputs` | Submit tool calls results to a run [9] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `text_completion` | Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions) | ![Development](https://img.shields.io/badge/-development-blue) |
+
+**[5]:** This operation SHOULD be used when message creation involves remote call to store this message, but does not result in model generating response. It SHOULD NOT be reported along with `chat`, `text_completion` or other inference operations.
+
+**[6]:** This operation describes the tool execution which usually is a client operation performed by the application code.
+Instrumentations SHOULD record this operation when possible - for example, when they provide convenience methods for executing custom tools or provide built-in tools executed on the client side.
+
+**[7]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs and for operations that involve polling the run status.
+
+**[8]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+Unlike `process_thread_run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
+Instrumentations SHOULD report `process_thread_run` operation instead of `create_thread_run` whenever it is possible.
+
+**[9]:** This operation SHOULD be used when instrumentation can determine that application is submitting the tool call output to the model, for example, when this operation is reported in the context of agent thread run.
+When application is submitting the tool call output with the generic GenAI call such as `chat` or `text_completion`, the instrumentation SHOULD use the corresponding operation name since it cannot reliably determine the intent behind the generic GenAI call.
 
 ---
 
@@ -476,9 +556,29 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 |---|---|---|
 | `chat` | Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `create_agent` | Create GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
+| `create_message` | Create a message in a thread [5] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `create_thread` | Create GenAI thread | ![Development](https://img.shields.io/badge/-development-blue) |
 | `embeddings` | Embeddings operation such as [OpenAI Create embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create) | ![Development](https://img.shields.io/badge/-development-blue) |
-| `execute_tool` | Execute a tool | ![Development](https://img.shields.io/badge/-development-blue) |
+| `execute_tool` | Execute a tool [6] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `process_thread_run` | Create and process a thread run on the agent [7] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `start_thread_run` | Create thread run [8] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `submit_tool_outputs` | Submit tool calls results to a run [9] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `text_completion` | Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions) | ![Development](https://img.shields.io/badge/-development-blue) |
+
+**[5]:** This operation SHOULD be used when message creation involves remote call to store this message, but does not result in model generating response. It SHOULD NOT be reported along with `chat`, `text_completion` or other inference operations.
+
+**[6]:** This operation describes the tool execution which usually is a client operation performed by the application code.
+Instrumentations SHOULD record this operation when possible - for example, when they provide convenience methods for executing custom tools or provide built-in tools executed on the client side.
+
+**[7]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs and for operations that involve polling the run status.
+
+**[8]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+Unlike `process_thread_run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
+Instrumentations SHOULD report `process_thread_run` operation instead of `create_thread_run` whenever it is possible.
+
+**[9]:** This operation SHOULD be used when instrumentation can determine that application is submitting the tool call output to the model, for example, when this operation is reported in the context of agent thread run.
+When application is submitting the tool call output with the generic GenAI call such as `chat` or `text_completion`, the instrumentation SHOULD use the corresponding operation name since it cannot reliably determine the intent behind the generic GenAI call.
 
 ---
 
