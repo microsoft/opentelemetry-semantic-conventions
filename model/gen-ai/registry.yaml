@@ -131,6 +131,10 @@ groups:
               value: "chat"
               brief: 'Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat)'
               stability: experimental
+            - id: create_agent
+              value: "create_agent"
+              brief: 'Create agent such as [OpenAI Create Assistant API](https://platform.openai.com/docs/api-reference/assistants) or [AWS Bedrock Create Agent API](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgent.html)'
+              stability: experimental
             - id: text_completion
               value: "text_completion"
               brief: 'Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions)'
@@ -140,6 +144,26 @@ groups:
           If one of the predefined values applies, but specific system uses a different name it's RECOMMENDED to document it in the semantic
           conventions for specific GenAI system and use system-specific name in the instrumentation.
           If a different name is not documented, instrumentation libraries SHOULD use applicable predefined value.
+      - id: gen_ai.agent.name
+        stability: experimental
+        type: string
+        brief: The name of the GenAI agent.
+        examples: ['web_search', "travel_bot"]
+      - id: gen_ai.agent.id
+        stability: experimental
+        type: string
+        brief: The unique identifier of the GenAI agent.
+        examples: ['asst_5j66UpCpwteGg4YSxUnt7lPY']
+      - id: gen_ai.thread.id # todo chat/session/conversation id?
+        stability: experimental
+        type: string
+        brief: The unique identifier of the conversation thread.
+        examples: ['thread_ggguJ0iZXRPjUnCy9vT9Fdvs']
+      - id: gen_ai.thread.run.id # todo - how it's related to response id?, chat|conversation.request.id?
+        stability: experimental
+        type: string
+        brief: The unique identifier of the thread run generated on the client side.
+        examples: ['thread_ggguJ0iZXRPjUnCy9vT9Fdvs']
   - id: registry.gen_ai.openai
     type: attribute_group
     display_name: OpenAI Attributes
