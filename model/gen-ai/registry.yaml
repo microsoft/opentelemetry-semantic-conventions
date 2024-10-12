@@ -46,10 +46,15 @@ groups:
         type: string
         brief: The name of the GenAI model a request is being made to.
         examples: 'gpt-4'
-      - id: gen_ai.request.max_tokens
+      - id: gen_ai.request.max_output_tokens
         stability: experimental
         type: int
-        brief: The maximum number of tokens the model generates for a request.
+        brief: The maximum number of completion tokens the model generates in response.
+        examples: [100]
+      - id: gen_ai.request.max_input_tokens
+        stability: experimental
+        type: int
+        brief: The maximum number of prompt tokens the model can use.
         examples: [100]
       - id: gen_ai.request.temperature
         stability: experimental
@@ -131,9 +136,46 @@ groups:
               value: "chat"
               brief: 'Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat)'
               stability: experimental
-            - id: create_agent
-              value: "create_agent"
-              brief: 'Create agent such as [OpenAI Create Assistant API](https://platform.openai.com/docs/api-reference/assistants) or [AWS Bedrock Create Agent API](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgent.html)'
+            - id: create_thread_run
+              value: "create_thread_run"
+              brief: 'Create a run on a thread'
+              note: >
+                This operation describes creating a run.
+                The run can consist of multiple steps (such as GenAI chat calls) which may
+                be executed locally on the the client by a GenAI client framework or
+                remotely on the GenAI agent.
+
+                Unlike `run` this operation covers the creation of the thread run
+                and does not include time awaiting the completion of the run.
+
+                Instrumentations SHOULD report `run` operation instead of `create_run`
+                whenever possible.
+              stability: experimental
+            - id: thread_run
+              value: "thread_run"
+              brief: 'Run a thread on an agent'
+              note: >
+                This operation describes creating and processing a thread run on an agent.
+
+                The run can consist of multiple steps (such as GenAI chat calls) which may
+                be executed locally on the the client by a GenAI client framework or
+                remotely on the GenAI agent.
+
+                The instrumented operation SHOULD cover full duration of the run
+                including time awaiting the final completion. It SHOULD be reported
+                for streaming runs, or for operations that involve polling the status.
+              stability: experimental
+            - id: submit_tool_output
+              value: "submit_tool_output"
+              brief: 'Submit tool call results to a run'
+              note: >
+                This operation describes submitting tool output to the run.
+              stability: experimental
+            - id: tool_execution
+              value: "tool_execution"
+              brief: 'Submit tool call results to a run'
+              note: >
+                This operation describes a specific tool execution.
               stability: experimental
             - id: text_completion
               value: "text_completion"
@@ -154,16 +196,53 @@ groups:
         type: string
         brief: The unique identifier of the GenAI agent.
         examples: ['asst_5j66UpCpwteGg4YSxUnt7lPY']
-      - id: gen_ai.thread.id # todo chat/session/conversation id?
+      - id: gen_ai.thread.id
         stability: experimental
         type: string
         brief: The unique identifier of the conversation thread.
         examples: ['thread_ggguJ0iZXRPjUnCy9vT9Fdvs']
-      - id: gen_ai.thread.run.id # todo - how it's related to response id?, chat|conversation.request.id?
+      - id: gen_ai.thread.run.id
         stability: experimental
         type: string
-        brief: The unique identifier of the thread run generated on the client side.
-        examples: ['thread_ggguJ0iZXRPjUnCy9vT9Fdvs']
+        brief: The unique identifier of the thread run.
+        examples: ['run_ep8IxBKdM06Mv338KNyo6EKP']
+      - id: gen_ai.thread.run.status
+        stability: experimental
+        type:
+          members:
+            - id: queued
+              value: "queued"
+              brief: 'The thread run is queued'
+              stability: experimental
+            - id: in_progress
+              value: "in_progress"
+              brief: 'The thread run is in progress'
+              stability: experimental
+            - id: completed
+              value: "completed"
+              brief: 'The thread run has completed'
+              stability: experimental
+            - id: incomplete
+              value: "incomplete"
+              brief: 'The thread run has ended due to reaching maximum number of input or output tokens'
+              stability: experimental
+            - id: requires_action
+              value: "requires_action"
+              brief: 'The thread run requires action.'
+              stability: experimental
+            - id: failed
+              value: "failed"
+              brief: 'The thread run has failed'
+              stability: experimental
+            - id: canceled
+              value: "canceled"
+              brief: 'The thread run has been canceled'
+              stability: experimental
+            - id: expired
+              value: "expired"
+              brief: 'The thread run has expired'
+              stability: experimental
+        brief: The thread run status
   - id: registry.gen_ai.openai
     type: attribute_group
     display_name: OpenAI Attributes
