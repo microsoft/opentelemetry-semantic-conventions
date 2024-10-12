@@ -199,8 +199,30 @@ groups:
       - id: gen_ai.thread.id
         stability: experimental
         type: string
-        brief: The unique identifier of the conversation thread.
+        brief: The unique identifier of the thread.
         examples: ['thread_ggguJ0iZXRPjUnCy9vT9Fdvs']
+      - id: gen_ai.message.id
+        stability: experimental
+        type: string
+        brief: The unique identifier of the message within a thread.
+        examples: ['msg_sLMd7grQfjFXgu5ZeHCXmBr7']
+      - id: gen_ai.message.status
+        stability: experimental
+        type:
+          members:
+            - id: in_progress
+              value: "in_progress"
+              brief: 'The message is in progress'
+              stability: experimental
+            - id: completed
+              value: "completed"
+              brief: 'The message has been completed'
+              stability: experimental
+            - id: incomplete
+              value: "incomplete"
+              brief: 'The message has ended due to reaching maximum number of input or output tokens'
+              stability: experimental
+        brief: The status of the message.
       - id: gen_ai.thread.run.id
         stability: experimental
         type: string
