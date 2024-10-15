@@ -7,13 +7,27 @@ groups:
     attributes:
       - ref: gen_ai.system
 
-  - id: gen_ai.system.message
+  - id: gen.ai.message.event.attributes
+    type: attribute_group
+    stability: experimental
+    brief: >
+      Describes Gen AI message event attributes.
+    extends: gen_ai.message.event.attributes
+    attributes:
+      - ref: gen_ai.thread.id
+        requirement_level:
+          recommended: if applicable
+      - ref: gen_ai.message.id
+        requirement_level:
+          recommended: if applicable
+
+  - id: gen_ai.system.message # TODO rename to instructions?
     name: gen_ai.system.message
     type: event
     stability: experimental
     brief: >
       This event describes the instructions passed to the GenAI system inside the prompt.
-    extends: gen_ai.common.event.attributes
+    extends: gen.ai.message.event.attributes
     body:
       id: gen_ai.system.message
       requirement_level: opt_in
@@ -41,7 +55,7 @@ groups:
     stability: experimental
     brief: >
       This event describes the prompt message specified by the user.
-    extends: gen_ai.common.event.attributes
+    extends: gen.ai.message.event.attributes
     body:
       id: gen_ai.user.message
       requirement_level: opt_in
@@ -69,7 +83,23 @@ groups:
     stability: experimental
     brief: >
       This event describes the assistant message passed to GenAI system or received from it.
-    extends: gen_ai.common.event.attributes
+    extends: gen.ai.message.event.attributes
+    attributes:
+      - ref: gen_ai.message.status
+        brief: >
+          The status of the message at the time event is reported.
+        requirement_level:
+          recommended: if applicable
+      - ref: gen_ai.agent.id
+        brief: >
+          The id of the agent that authored the message.
+        requirement_level:
+          recommended: if applicable
+      - ref: gen_ai.thread.run.id
+        brief: >
+          The id of the run that the message was created in.
+        requirement_level:
+          recommended: if applicable
     body:
       id: gen_ai.assistant.message
       requirement_level: opt_in
@@ -150,7 +180,13 @@ groups:
     stability: experimental
     brief: >
       This event describes the tool or function response message.
-    extends: gen_ai.common.event.attributes
+    extends: gen.ai.message.event.attributes
+    attributes:
+      - ref: gen_ai.thread.run.id
+        brief: >
+          The id of the run that the tool is being executed in.
+        requirement_level:
+          recommended: if applicable
     body:
       id: gen_ai.tool.message
       requirement_level: opt_in

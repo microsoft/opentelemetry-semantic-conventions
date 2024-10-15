@@ -1,6 +1,7 @@
 groups:
   - id: registry.gen_ai
     type: attribute_group
+    stability: experimental
     display_name: GenAI Attributes
     brief: >
       This document defines the attributes used to describe telemetry in the context of Generative Artificial Intelligence (GenAI) Models requests and responses.
@@ -87,7 +88,7 @@ groups:
         type: double
         brief: The presence penalty setting for the GenAI request.
         examples: [0.1]
-      - id: gen_ai.response.id
+      - id: gen_ai.response.id  # TODO: should we deprecate response.id in favor of message.id?
         stability: experimental
         type: string
         brief: The unique identifier for the completion.
@@ -168,14 +169,10 @@ groups:
             - id: submit_tool_output
               value: "submit_tool_output"
               brief: 'Submit tool call results to a run'
-              note: >
-                This operation describes submitting tool output to the run.
               stability: experimental
-            - id: tool_execution
-              value: "tool_execution"
-              brief: 'Submit tool call results to a run'
-              note: >
-                This operation describes a specific tool execution.
+            - id: execute_tool
+              value: "execute_tool"
+              brief: 'Execute a tool'
               stability: experimental
             - id: text_completion
               value: "text_completion"
@@ -190,7 +187,7 @@ groups:
         stability: experimental
         type: string
         brief: The name of the GenAI agent.
-        examples: ['web_search', "travel_bot"]
+        examples: ['web_search', 'travel_bot']
       - id: gen_ai.agent.id
         stability: experimental
         type: string
@@ -223,6 +220,17 @@ groups:
               brief: 'The message has ended due to reaching maximum number of input or output tokens'
               stability: experimental
         brief: The status of the message.
+      - id: gen_ai.tool.call.id
+        stability: experimental
+        type: string
+        brief: The tool call identifier.
+        examples: ['call_mszuSIzqtI65i1wAUOE8w5H4']
+      - id: gen_ai.tool.name
+        stability: experimental
+        type: string
+        brief: The tool call identifier.
+        examples: ['call_mszuSIzqtI65i1wAUOE8w5H4']
+
       - id: gen_ai.thread.run.id
         stability: experimental
         type: string
@@ -267,6 +275,7 @@ groups:
         brief: The thread run status
   - id: registry.gen_ai.openai
     type: attribute_group
+    stability: experimental
     display_name: OpenAI Attributes
     brief: >
       Thie group defines attributes for OpenAI.
