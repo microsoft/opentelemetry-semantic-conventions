@@ -14,7 +14,9 @@ groups:
             custom model, the value should have a more specific name than the base model that's been fine-tuned.
       - ref: gen_ai.operation.name
         requirement_level: required
-      - ref: gen_ai.request.max_tokens
+      - ref: gen_ai.request.max_input_tokens
+        requirement_level: recommended
+      - ref: gen_ai.request.max_output_tokens
         requirement_level: recommended
       - ref: gen_ai.request.temperature
         requirement_level: recommended

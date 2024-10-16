@@ -7,12 +7,12 @@ groups:
     attributes:
       - ref: gen_ai.system
 
-  - id: gen.ai.message.event.attributes
+  - id: gen_ai.message.event.attributes
     type: attribute_group
     stability: experimental
     brief: >
       Describes Gen AI message event attributes.
-    extends: gen_ai.message.event.attributes
+    extends: gen_ai.common.event.attributes
     attributes:
       - ref: gen_ai.thread.id
         requirement_level:
@@ -27,7 +27,7 @@ groups:
     stability: experimental
     brief: >
       This event describes the instructions passed to the GenAI system inside the prompt.
-    extends: gen.ai.message.event.attributes
+    extends: gen_ai.message.event.attributes
     body:
       id: gen_ai.system.message
       requirement_level: opt_in
@@ -55,7 +55,7 @@ groups:
     stability: experimental
     brief: >
       This event describes the prompt message specified by the user.
-    extends: gen.ai.message.event.attributes
+    extends: gen_ai.message.event.attributes
     body:
       id: gen_ai.user.message
       requirement_level: opt_in
@@ -83,7 +83,7 @@ groups:
     stability: experimental
     brief: >
       This event describes the assistant message passed to GenAI system or received from it.
-    extends: gen.ai.message.event.attributes
+    extends: gen_ai.message.event.attributes
     attributes:
       - ref: gen_ai.message.status
         brief: >
@@ -180,7 +180,7 @@ groups:
     stability: experimental
     brief: >
       This event describes the tool or function response message.
-    extends: gen.ai.message.event.attributes
+    extends: gen_ai.message.event.attributes
     attributes:
       - ref: gen_ai.thread.run.id
         brief: >

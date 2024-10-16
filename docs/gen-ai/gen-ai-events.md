@@ -63,7 +63,9 @@ This event describes the instructions passed to the GenAI system inside the prom
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
+| [`gen_ai.message.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the message within a thread. | `msg_sLMd7grQfjFXgu5ZeHCXmBr7` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [1] | `openai` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.thread.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread. | `thread_ggguJ0iZXRPjUnCy9vT9Fdvs` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
 **[1]:** The `gen_ai.system` describes a family of GenAI models with specific model identified
 by `gen_ai.request.model` and `gen_ai.response.model` attributes.
@@ -114,7 +116,9 @@ This event describes the prompt message specified by the user.
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
+| [`gen_ai.message.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the message within a thread. | `msg_sLMd7grQfjFXgu5ZeHCXmBr7` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [1] | `openai` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.thread.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread. | `thread_ggguJ0iZXRPjUnCy9vT9Fdvs` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
 **[1]:** The `gen_ai.system` describes a family of GenAI models with specific model identified
 by `gen_ai.request.model` and `gen_ai.response.model` attributes.
@@ -165,7 +169,12 @@ This event describes the assistant message passed to GenAI system or received fr
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
+| [`gen_ai.agent.id`](/docs/attributes-registry/gen-ai.md) | string | The id of the agent that authored the message. | `asst_5j66UpCpwteGg4YSxUnt7lPY` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.message.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the message within a thread. | `msg_sLMd7grQfjFXgu5ZeHCXmBr7` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.message.status`](/docs/attributes-registry/gen-ai.md) | string | The status of the message at the time event is reported. | `in_progress`; `completed`; `incomplete` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [1] | `openai` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.thread.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread. | `thread_ggguJ0iZXRPjUnCy9vT9Fdvs` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.thread.run.id`](/docs/attributes-registry/gen-ai.md) | string | The id of the run that the message was created in. | `run_ep8IxBKdM06Mv338KNyo6EKP` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
 **[1]:** The `gen_ai.system` describes a family of GenAI models with specific model identified
 by `gen_ai.request.model` and `gen_ai.response.model` attributes.
@@ -176,6 +185,14 @@ is set to `openai` based on the instrumentation's best knowledge.
 
 For custom model, a custom friendly name SHOULD be used.
 If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
+
+`gen_ai.message.status` has the following list of well-known values. If one of them applies, then the respective value MUST be used; otherwise, a custom value MAY be used.
+
+| Value  | Description | Stability |
+|---|---|---|
+| `completed` | The message has been completed | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `in_progress` | The message is in progress | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `incomplete` | The message has ended due to reaching maximum number of input or output tokens | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
 `gen_ai.system` has the following list of well-known values. If one of them applies, then the respective value MUST be used; otherwise, a custom value MAY be used.
 
@@ -231,7 +248,10 @@ This event describes the tool or function response message.
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
+| [`gen_ai.message.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the message within a thread. | `msg_sLMd7grQfjFXgu5ZeHCXmBr7` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [1] | `openai` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.thread.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread. | `thread_ggguJ0iZXRPjUnCy9vT9Fdvs` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.thread.run.id`](/docs/attributes-registry/gen-ai.md) | string | The id of the run that the tool is being executed in. | `run_ep8IxBKdM06Mv338KNyo6EKP` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
 **[1]:** The `gen_ai.system` describes a family of GenAI models with specific model identified
 by `gen_ai.request.model` and `gen_ai.response.model` attributes.
