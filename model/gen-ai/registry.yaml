@@ -139,55 +139,73 @@ groups:
               stability: experimental
             - id: create_thread_run
               value: "create_thread_run"
-              brief: 'Create a run on a thread'
+              brief: 'Create thread run'
               note: >
-                This operation describes creating a run.
-                The run can consist of multiple steps (such as GenAI chat calls) which may
-                be executed locally on the the client by a GenAI client framework or
-                remotely on the GenAI agent.
+                The run may consist of multiple steps such as calls to model or
+                tool calls which may be executed on the client side by the
+                application or GenAI client framework or remotely on the GenAI agent.
 
-                Unlike `run` this operation covers the creation of the thread run
+                Unlike `thread_run` this operation covers the creation of the thread run
                 and does not include time awaiting the completion of the run.
 
-                Instrumentations SHOULD report `run` operation instead of `create_run`
-                whenever possible.
+                Instrumentations SHOULD report `thread_run` operation instead
+                of `create_thread_run` whenever possible.
               stability: experimental
             - id: thread_run
               value: "thread_run"
-              brief: 'Run a thread on an agent'
+              brief: 'Create and process a thread run on the agent'
               note: >
-                This operation describes creating and processing a thread run on an agent.
-
-                The run can consist of multiple steps (such as GenAI chat calls) which may
-                be executed locally on the the client by a GenAI client framework or
-                remotely on the GenAI agent.
+                The run may consist of multiple steps such as calls to model or
+                tool calls which may be executed on the client side by the
+                application or GenAI client framework or remotely on the GenAI agent.
 
                 The instrumented operation SHOULD cover full duration of the run
                 including time awaiting the final completion. It SHOULD be reported
-                for streaming runs, or for operations that involve polling the status.
+                for streaming runs and for operations that involve polling the
+                run status.
               stability: experimental
             - id: submit_tool_output
               value: "submit_tool_output"
               brief: 'Submit tool call results to a run'
+              note: >
+                This operation SHOULD be used when instrumentation can determine that
+                application is submitting the tool call output to the model, for example, when
+                this operation is reported in the context of agent thread run.
+
+                When application is submitting the tool call output with the generic GenAI call
+                such as `chat` or `text_completion`, the instrumentation SHOULD use the
+                corresponding operation name since it cannot reliably determine the
+                intent behind the generic GenAI call.
+
               stability: experimental
             - id: execute_tool
               value: "execute_tool"
               brief: 'Execute a tool'
               stability: experimental
+              note: >
+                This operation describes the tool execution which usually is a client
+                operation performed by the application code.
+
+                Instrumentations SHOULD record this operation when possible - for example,
+                when they provide convenience methods for executing custom tools or
+                provide built-in tools executed on the client side.
             - id: text_completion
               value: "text_completion"
               brief: 'Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions)'
+              stability: experimental
+            - id: create_agent
+              value: "create_agent"
+              brief: 'Create GenAI agent'
+              stability: experimental
+            - id: create_thread
+              value: "create_thread"
+              brief: 'Create GenAI thread'
               stability: experimental
         brief: The name of the operation being performed.
         note: >
           If one of the predefined values applies, but specific system uses a different name it's RECOMMENDED to document it in the semantic
           conventions for specific GenAI system and use system-specific name in the instrumentation.
           If a different name is not documented, instrumentation libraries SHOULD use applicable predefined value.
-      - id: gen_ai.agent.name
-        stability: experimental
-        type: string
-        brief: The name of the GenAI agent.
-        examples: ['web_search', 'travel_bot']
       - id: gen_ai.agent.id
         stability: experimental
         type: string
@@ -230,7 +248,6 @@ groups:
         type: string
         brief: The tool call identifier.
         examples: ['call_mszuSIzqtI65i1wAUOE8w5H4']
-
       - id: gen_ai.thread.run.id
         stability: experimental
         type: string

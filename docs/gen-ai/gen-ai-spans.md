@@ -127,4 +127,81 @@ The instrumented operation SHOULD cover full duration of the run including time 
 
 User inputs and model responses may be recorded as events parented to GenAI operation span. See [Semantic Conventions for GenAI events](./gen-ai-events.md) for the details.
 
+## AI agents
+
+Generative AI applications use patterns like
+[RAG](https://wikipedia.org/wiki/Retrieval-augmented_generation) that involve
+multiple operations such as GenAI or database calls. They also may need to store
+conversation history which also involves communication with multiple services.
+
+These features could be implemented in the application code, client framework
+such as [LangChain](https://python.langchain.com/v0.1/docs/modules/agents/agent_types)
+or on the managed service such as [OpenAI Assistants](https://platform.openai.com/docs/assistants),
+[Azure AI Agents](TODO link), or [Amazon Bedrock Agents](https://aws.amazon.com/bedrock/agents/).
+
+This section covers semantic conventions for agent operations and is intended for
+GenAI client frameworks or libraries.
+
+### Agent spans
+
+Agent spans share the same set of [attributes](#genai-attributes) as other GenAI spans.
+Let's list common agent operations and corresponding properties.
+
+- **create_agent** - describes the process of creating an agent. The agent is usually
+   shared across multiple thread runs.
+- **create_thread** - describes creation of a thread (also known as session or conversation)
+  that may contain multiple messages.
+- **thread_run** - describes a thread run during which an agent processes messages in the
+  thread and generates a next message. The `thread_run` span SHOULD cover the full duration of
+  the run.
+- **submit_tool_output** - describes the process of submitting tool responses to the agent.
+- **execute_tool** - describes client-side tool execution. Instrumentation SHOULD
+  capture corresponding spans when it is possible.
+
+If GenAI framework uses model-specific client library to communicate with the model,
+the framework instrumentation SHOULD NOT instrument the underlying client library **by default**.
+It MAY, however, provide the instrumentation for underlying library as an opt-in feature.
+
+#### AI Agent example
+
+```mermaid
+%%{init:
+{
+  "sequence": { "messageAlign": "left", "htmlLabels":true },
+  "themeVariables": { "noteBkgColor" : "green", "noteTextColor": "black", "activationBkgColor": "green", "htmlLabels":true }
+}
+}%%
+sequenceDiagram
+    participant U as User
+    participant A as Application
+    participant I as Instrumented Client
+    participant M as Agent
+    A->>+I: #U+200D
+    I->>M: gen_ai.system.message: You're a helpful bot. Use your knowledge base....<br/>tools: file_search<br/>vector_index: my_db_index
+    Note left of I: create_agent span
+    M-->>I: #U+200D
+    I-->>-A: #U+200D
+
+    U->>A: {first question}
+    A->>+I: #U+200D
+
+    I->>M: gen_ai.user.message: {first question}
+    M-->>M: - rewrite query<br/>- get embeddings<br/>- get context from my_db_index<br/>- completion
+    Note left of I: thread_run span
+    M-->>I: chunk
+    M-->>I: ...<br/>gen_ai.assistant.message: {answer}
+    A-->>U: {answer}
+
+    U->>A: {follow up question}
+    A->>+I: #U+200D
+
+    I->>M: gen_ai.user.message: {follow up question}
+
+    Note left of I: thread_run span
+    M-->>I: chunk
+    M-->>I: ...<br/>gen_ai.assistant.message: {another answer}
+    I-->>-A: #U+200D
+    A -->>U: {another answer}
+```
+
 [DocumentStatus]: https://opentelemetry.io/docs/specs/otel/document-status

@@ -1,9 +1,32 @@
 groups:
+  - id: trace.gen_ai.client.minimal_attributes
+    type: attribute_group
+    stability: experimental
+    brief: >
+      Describes GenAI span that represents agent creation.
+    attributes:
+      - ref: gen_ai.operation.name
+        requirement_level: required
+      - ref: server.address
+        brief: GenAI server address.
+        requirement_level: recommended
+      - ref: server.port
+        brief: GenAI server port.
+        requirement_level:
+          conditionally_required: If `server.address` is set.
+      - ref: error.type
+        requirement_level:
+          conditionally_required: "if the operation ended in an error"
+        note: |
+          The `error.type` SHOULD match the error code returned by the Generative AI provider or the client library,
+          the canonical name of exception that occurred, or another low-cardinality error identifier.
+          Instrumentations SHOULD document the list of errors they report.
   - id: trace.gen_ai.client.common_attributes
     type: attribute_group
     stability: experimental
     brief: >
       Describes GenAI operation span.
+    extends: trace.gen_ai.client.minimal_attributes
     attributes:
       - ref: gen_ai.request.model
         requirement_level:
@@ -12,8 +35,6 @@ groups:
             The name of the GenAI model a request is being made to. If the model is supplied by a vendor,
             then the value must be the exact name of the model requested. If the model is a fine-tuned
             custom model, the value should have a more specific name than the base model that's been fine-tuned.
-      - ref: gen_ai.operation.name
-        requirement_level: required
       - ref: gen_ai.request.max_input_tokens
         requirement_level: recommended
       - ref: gen_ai.request.max_output_tokens
@@ -42,20 +63,18 @@ groups:
         requirement_level: recommended
       - ref: gen_ai.usage.output_tokens
         requirement_level: recommended
-      - ref: server.address
-        brief: GenAI server address.
-        requirement_level: recommended
-      - ref: server.port
-        brief: GenAI server port.
+      - ref: get_ai.agent.id  # alternatives: assistant (openai)
         requirement_level:
-          conditionally_required: If `server.address` is set.
-      - ref: error.type
+          recommended: if available
+      - ref: gen_ai.thread.id  # alternatives: gen_ai.conversation.id, gen_ai.session.id (bedrock)
         requirement_level:
-          conditionally_required: "if the operation ended in an error"
-        note: |
-          The `error.type` SHOULD match the error code returned by the Generative AI provider or the client library,
-          the canonical name of exception that occurred, or another low-cardinality error identifier.
-          Instrumentations SHOULD document the list of errors they report.
+          recommended: if available
+      - ref: gen_ai.thread.run.id  # alternatives: gen_ai.*.invocation.id (bedrock, langgraph), gen_ai.*.task.id  (crewai)
+        requirement_level:
+          recommended: if available
+      - ref: gen_ai.thread.run.status  # alternatives: gen_ai.*.invocation.status (bedrock, langgraph), gen_ai.*.task.status.id (crewai)
+        requirement_level:
+          recommended: if available
   - id: trace.gen_ai.client.span
     type: span
     stability: experimental
@@ -68,9 +87,6 @@ groups:
         requirement_level: required
       - ref: gen_ai.request.top_k
         requirement_level: recommended
-    events:
-      - gen_ai.content.prompt
-      - gen_ai.content.completion
 
   - id: trace.gen_ai.openai.client
     extends: trace.gen_ai.client.common_attributes
@@ -118,3 +134,51 @@ groups:
       - ref: server.port
         requirement_level:
           conditionally_required: If not default (443).
+
+  - id: trace.gen_ai.client.create_agent
+    type: span
+    stability: experimental
+    brief: >
+      Describes GenAI span that represents agent creation.
+    extends: trace.gen_ai.client.minimal_attributes
+    attributes:
+      - ref: gen_ai.system
+        requirement_level: required
+      - ref: get_ai.agent.id
+        requirement_level:
+          conditionally_required: if available
+      - ref: gen_ai.request.model
+        requirement_level:
+          conditionally_required: If available.
+        note: >
+            The name of the GenAI model a request is being made to. If the model is supplied by a vendor,
+            then the value must be the exact name of the model requested. If the model is a fine-tuned
+            custom model, the value should have a more specific name than the base model that's been fine-tuned.
+
+  - id: trace.gen_ai.client.create_thread
+    type: span
+    stability: experimental
+    brief: >
+      Describes GenAI span that represents thread creation.
+    extends: trace.gen_ai.client.minimal_attributes
+    attributes:
+      - ref: gen_ai.system
+        requirement_level: required
+      - ref: get_ai.thread.id
+        requirement_level:
+          conditionally_required: if available
+
+  - id: trace.gen_ai.client.thread_run
+    type: span
+    stability: experimental
+    brief: >
+      Describes GenAI span that represents thread run.
+    extends: trace.gen_ai.client.span
+    attributes:
+      - ref: get_ai.agent.id
+        requirement_level: required
+      - ref: get_ai.thread.id
+        requirement_level: required
+      - ref: gen_ai.thread.run.id
+        requirement_level:
+          conditionally_required: if available
