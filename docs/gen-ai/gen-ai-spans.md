@@ -13,6 +13,7 @@ linkTitle: Generative AI traces
 - [Name](#name)
 - [GenAI attributes](#genai-attributes)
 - [Capturing inputs and outputs](#capturing-inputs-and-outputs)
+- [Composite Generative AI scenarios](#composite-generative-ai-scenarios)
 
 <!-- tocstop -->
 
@@ -39,11 +40,15 @@ These attributes track input data and metadata for a request to an GenAI model. 
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `chat`; `create_thread_run`; `thread_run` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `chat`; `text_completion`; `create_agent` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [2] | `openai` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`error.type`](/docs/attributes-registry/error.md) | string | Describes a class of error the operation ended with. [3] | `timeout`; `java.net.UnknownHostException`; `server_certificate_invalid`; `500` | `Conditionally Required` if the operation ended in an error | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
 | [`gen_ai.request.model`](/docs/attributes-registry/gen-ai.md) | string | The name of the GenAI model a request is being made to. [4] | `gpt-4` | `Conditionally Required` If available. | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`server.port`](/docs/attributes-registry/server.md) | int | GenAI server port. [5] | `80`; `8080`; `443` | `Conditionally Required` If `server.address` is set. | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
+| [`gen_ai.agent.description`](/docs/attributes-registry/gen-ai.md) | string | Free-form description of the GenAI agent provided by the application. | `Helps with math problems`; `Generates fiction stories` | `Recommended` [6] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.agent.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the GenAI agent. | `asst_5j66UpCpwteGg4YSxUnt7lPY` | `Recommended` [7] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.agent.name`](/docs/attributes-registry/gen-ai.md) | string | Human-readable name of the GenAI agent provided by the application. | `Math Tutor`; `Fiction Writer` | `Recommended` [8] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.message.id`](/docs/attributes-registry/gen-ai.md) | string | Identifies message sent to or received from Generative AI model or agent. [9] | `msg_sLMd7grQfjFXgu5ZeHCXmBr7`; `chatcmpl-123` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.request.frequency_penalty`](/docs/attributes-registry/gen-ai.md) | double | The frequency penalty setting for the GenAI request. | `0.1` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.request.max_input_tokens`](/docs/attributes-registry/gen-ai.md) | int | The maximum number of prompt tokens the model can use. | `100` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.request.max_output_tokens`](/docs/attributes-registry/gen-ai.md) | int | The maximum number of completion tokens the model generates in response. | `100` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
@@ -53,11 +58,12 @@ These attributes track input data and metadata for a request to an GenAI model. 
 | [`gen_ai.request.top_k`](/docs/attributes-registry/gen-ai.md) | double | The top_k sampling setting for the GenAI request. | `1.0` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.request.top_p`](/docs/attributes-registry/gen-ai.md) | double | The top_p sampling setting for the GenAI request. | `1.0` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.response.finish_reasons`](/docs/attributes-registry/gen-ai.md) | string[] | Array of reasons the model stopped generating tokens, corresponding to each generation received. | `["stop"]`; `["stop", "length"]` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| [`gen_ai.response.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier for the completion. | `chatcmpl-123` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| [`gen_ai.response.model`](/docs/attributes-registry/gen-ai.md) | string | The name of the model that generated the response. [6] | `gpt-4-0613` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.response.model`](/docs/attributes-registry/gen-ai.md) | string | The name of the model that generated the response. [10] | `gpt-4-0613` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.thread.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread. | `thread_ggguJ0iZXRPjUnCy9vT9Fdvs` | `Recommended` [11] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.thread.run.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread run. | `run_ep8IxBKdM06Mv338KNyo6EKP` | `Recommended` [12] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.usage.input_tokens`](/docs/attributes-registry/gen-ai.md) | int | The number of tokens used in the GenAI input (prompt). | `100` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.usage.output_tokens`](/docs/attributes-registry/gen-ai.md) | int | The number of tokens used in the GenAI response (completion). | `180` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| [`server.address`](/docs/attributes-registry/server.md) | string | GenAI server address. [7] | `example.com`; `10.1.2.80`; `/tmp/my.sock` | `Recommended` | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
+| [`server.address`](/docs/attributes-registry/server.md) | string | GenAI server address. [13] | `example.com`; `10.1.2.80`; `/tmp/my.sock` | `Recommended` [14] | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
 
 **[1]:** If one of the predefined values applies, but specific system uses a different name it's RECOMMENDED to document it in the semantic conventions for specific GenAI system and use system-specific name in the instrumentation. If a different name is not documented, instrumentation libraries SHOULD use applicable predefined value.
 
@@ -79,9 +85,51 @@ Instrumentations SHOULD document the list of errors they report.
 
 **[5]:** When observed from the client side, and when communicating through an intermediary, `server.port` SHOULD represent the server port behind any intermediaries, for example proxies, if it's available.
 
-**[6]:** If available. The name of the GenAI model that provided the response. If the model is supplied by a vendor, then the value must be the exact name of the model actually used. If the model is a fine-tuned custom model, the value should have a more specific name than the base model that's been fine-tuned.
+**[6]:** If available.
 
-**[7]:** When observed from the client side, and when communicating through an intermediary, `server.address` SHOULD represent the server address behind any intermediaries, for example proxies, if it's available.
+Agent name is usually available only on the agent-related operations
+such as `create_agent`.
+
+**[7]:** If available.
+
+`gen_ai.agent.id` is usually available on the spans that describe operations
+performed on the agent such as `create_agent` or `process_thread_run`.
+
+Instrumentations of the low level GenAI inference operations such as
+`chat` or `text_completion` done by the lower-level clients usually
+don't have agent id available. If it's available, it SHOULD be set.
+
+**[8]:** If available.
+
+Agent name is usually available only on the agent-related operations
+such as `create_agent`.
+
+**[9]:** For inference operations such as `chat` or `text_completion`, it SHOULD be the completion identifier returned by the GenAI system and may not be unique if multiple choices are returned.
+If message history is managed by the application, agent, or framework, it SHOULD match the identifier used by the message history management system.
+
+**[10]:** If available. The name of the GenAI model that provided the response. If the model is supplied by a vendor, then the value must be the exact name of the model actually used. If the model is a fine-tuned custom model, the value should have a more specific name than the base model that's been fine-tuned.
+
+**[11]:** If available.
+
+`gen_ai.thread.id` is usually available on the spans that describe operations
+performed on the thread such as `create_thread` or `process_thread_run`.
+
+Instrumentations of the low level GenAI inference operations such as
+`chat` or `text_completion` done by the lower-level clients usually
+don't have thread id available. If it's available, it SHOULD be set.
+
+**[12]:** If available.
+
+`gen_ai.thread.run.id` is usually available on the spans that describe
+thread runs such as `process_thread_run` or `start_thread_run`.
+
+Instrumentations of the low level GenAI inference operations such as
+`chat` or `text_completion` done by the lower-level clients usually
+don't have thread run id available. If it's available, it SHOULD be set.
+
+**[13]:** When observed from the client side, and when communicating through an intermediary, `server.address` SHOULD represent the server address behind any intermediaries, for example proxies, if it's available.
+
+**[14]:** if available and if operation involves remote calls against GenAI service.
 
 `error.type` has the following list of well-known values. If one of them applies, then the respective value MUST be used; otherwise, a custom value MAY be used.
 
@@ -94,19 +142,29 @@ Instrumentations SHOULD document the list of errors they report.
 | Value  | Description | Stability |
 |---|---|---|
 | `chat` | Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `create_thread_run` | Create a run on a thread [8] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `execute_tool` | Execute a tool | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `submit_tool_output` | Submit tool call results to a run | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_agent` | Create GenAI agent | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_message` | Create a message in a thread [15] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_thread` | Create GenAI thread | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `execute_tool` | Execute a tool [16] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `process_thread_run` | Create and process a thread run on the agent [17] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `start_thread_run` | Create thread run [18] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `submit_tool_outputs` | Submit tool calls results to a run [19] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `text_completion` | Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `thread_run` | Run a thread on an agent [9] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
-**[8]:** This operation describes creating a run. The run can consist of multiple steps (such as GenAI chat calls) which may be executed locally on the the client by a GenAI client framework or remotely on the GenAI agent.
-Unlike `run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
-Instrumentations SHOULD report `run` operation instead of `create_run` whenever possible.
+**[15]:** This operation SHOULD be used when message creation involves remote call to store this message, but does not result in model generating response. It SHOULD NOT be reported along with `chat`, `text_completion` or other inference operations.
 
-**[9]:** This operation describes creating and processing a thread run on an agent.
-The run can consist of multiple steps (such as GenAI chat calls) which may be executed locally on the the client by a GenAI client framework or remotely on the GenAI agent.
-The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs, or for operations that involve polling the status.
+**[16]:** This operation describes the tool execution which usually is a client operation performed by the application code.
+Instrumentations SHOULD record this operation when possible - for example, when they provide convenience methods for executing custom tools or provide built-in tools executed on the client side.
+
+**[17]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs and for operations that involve polling the run status.
+
+**[18]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+Unlike `process_thread_run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
+Instrumentations SHOULD report `process_thread_run` operation instead of `create_thread_run` whenever it is possible.
+
+**[19]:** This operation SHOULD be used when instrumentation can determine that application is submitting the tool call output to the model, for example, when this operation is reported in the context of agent thread run.
+When application is submitting the tool call output with the generic GenAI call such as `chat` or `text_completion`, the instrumentation SHOULD use the corresponding operation name since it cannot reliably determine the intent behind the generic GenAI call.
 
 `gen_ai.system` has the following list of well-known values. If one of them applies, then the respective value MUST be used; otherwise, a custom value MAY be used.
 
@@ -127,81 +185,19 @@ The instrumented operation SHOULD cover full duration of the run including time 
 
 User inputs and model responses may be recorded as events parented to GenAI operation span. See [Semantic Conventions for GenAI events](./gen-ai-events.md) for the details.
 
-## AI agents
+## Composite Generative AI scenarios
 
 Generative AI applications use patterns like
 [RAG](https://wikipedia.org/wiki/Retrieval-augmented_generation) that involve
 multiple operations such as GenAI or database calls. They also may need to store
 conversation history which also involves communication with multiple services.
 
-These features could be implemented in the application code, client framework
-such as [LangChain](https://python.langchain.com/v0.1/docs/modules/agents/agent_types)
-or on the managed service such as [OpenAI Assistants](https://platform.openai.com/docs/assistants),
+These patterns could be implemented in the application code, client framework
+such as [LangGraph](https://github.com/langchain-ai/langgraph) or on the managed
+service such as [OpenAI Assistants](https://platform.openai.com/docs/assistants),
 [Azure AI Agents](TODO link), or [Amazon Bedrock Agents](https://aws.amazon.com/bedrock/agents/).
 
-This section covers semantic conventions for agent operations and is intended for
-GenAI client frameworks or libraries.
-
-### Agent spans
-
-Agent spans share the same set of [attributes](#genai-attributes) as other GenAI spans.
-Let's list common agent operations and corresponding properties.
-
-- **create_agent** - describes the process of creating an agent. The agent is usually
-   shared across multiple thread runs.
-- **create_thread** - describes creation of a thread (also known as session or conversation)
-  that may contain multiple messages.
-- **thread_run** - describes a thread run during which an agent processes messages in the
-  thread and generates a next message. The `thread_run` span SHOULD cover the full duration of
-  the run.
-- **submit_tool_output** - describes the process of submitting tool responses to the agent.
-- **execute_tool** - describes client-side tool execution. Instrumentation SHOULD
-  capture corresponding spans when it is possible.
-
-If GenAI framework uses model-specific client library to communicate with the model,
-the framework instrumentation SHOULD NOT instrument the underlying client library **by default**.
-It MAY, however, provide the instrumentation for underlying library as an opt-in feature.
-
-#### AI Agent example
-
-```mermaid
-%%{init:
-{
-  "sequence": { "messageAlign": "left", "htmlLabels":true },
-  "themeVariables": { "noteBkgColor" : "green", "noteTextColor": "black", "activationBkgColor": "green", "htmlLabels":true }
-}
-}%%
-sequenceDiagram
-    participant U as User
-    participant A as Application
-    participant I as Instrumented Client
-    participant M as Agent
-    A->>+I: #U+200D
-    I->>M: gen_ai.system.message: You're a helpful bot. Use your knowledge base....<br/>tools: file_search<br/>vector_index: my_db_index
-    Note left of I: create_agent span
-    M-->>I: #U+200D
-    I-->>-A: #U+200D
-
-    U->>A: {first question}
-    A->>+I: #U+200D
-
-    I->>M: gen_ai.user.message: {first question}
-    M-->>M: - rewrite query<br/>- get embeddings<br/>- get context from my_db_index<br/>- completion
-    Note left of I: thread_run span
-    M-->>I: chunk
-    M-->>I: ...<br/>gen_ai.assistant.message: {answer}
-    A-->>U: {answer}
-
-    U->>A: {follow up question}
-    A->>+I: #U+200D
-
-    I->>M: gen_ai.user.message: {follow up question}
-
-    Note left of I: thread_run span
-    M-->>I: chunk
-    M-->>I: ...<br/>gen_ai.assistant.message: {another answer}
-    I-->>-A: #U+200D
-    A -->>U: {another answer}
-```
+Semantic conventions for agents and local composite scenarios are covered in the [GenAI agent spans](./gen-ai-agent-spans.md)
+document.
 
 [DocumentStatus]: https://opentelemetry.io/docs/specs/otel/document-status

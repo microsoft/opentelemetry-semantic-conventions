@@ -63,9 +63,10 @@ This event describes the instructions passed to the GenAI system inside the prom
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| [`gen_ai.message.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the message within a thread. | `msg_sLMd7grQfjFXgu5ZeHCXmBr7` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.agent.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the GenAI agent. | `asst_5j66UpCpwteGg4YSxUnt7lPY` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [1] | `openai` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.thread.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread. | `thread_ggguJ0iZXRPjUnCy9vT9Fdvs` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.thread.run.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread run. | `run_ep8IxBKdM06Mv338KNyo6EKP` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
 **[1]:** The `gen_ai.system` describes a family of GenAI models with specific model identified
 by `gen_ai.request.model` and `gen_ai.response.model` attributes.
@@ -92,7 +93,7 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 | Body Field  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
 | `content` | undefined | The contents of the system message. | `You're a helpful bot` | `Opt-In` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `role` | string | The actual role of the message author as passed in the message. | `system`; `instruction` | `Conditionally Required` if available and not equal to `system`.` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `role` | string | The actual role of the message author as passed in the message. | `system`; `agent` | `Conditionally Required` if available and not equal to `system`.` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
@@ -116,9 +117,10 @@ This event describes the prompt message specified by the user.
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| [`gen_ai.message.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the message within a thread. | `msg_sLMd7grQfjFXgu5ZeHCXmBr7` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.agent.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the GenAI agent. | `asst_5j66UpCpwteGg4YSxUnt7lPY` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [1] | `openai` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.thread.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread. | `thread_ggguJ0iZXRPjUnCy9vT9Fdvs` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.thread.run.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread run. | `run_ep8IxBKdM06Mv338KNyo6EKP` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
 **[1]:** The `gen_ai.system` describes a family of GenAI models with specific model identified
 by `gen_ai.request.model` and `gen_ai.response.model` attributes.
@@ -144,6 +146,9 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 
 | Body Field  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
+| `attachments`: | map | The list of message attachments to be used by tools. |  | `Recommended` if available | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| &nbsp;&nbsp;`id` | string | The id of the attachment. | `file_mszuSIzqtI65i1wAUOE8w5H4` | `Recommended` if available | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| &nbsp;&nbsp;`tools` | string[] | The types of the tools the attachment is provided for | `["file_search"]` | `Recommended` if available | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `content` | undefined | The contents of the user message. | `What's the weather in Paris?` | `Opt-In` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `role` | string | The actual role of the message author as passed in the message. | `user`; `customer` | `Conditionally Required` if available and not equal to `user`. | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
@@ -169,14 +174,17 @@ This event describes the assistant message passed to GenAI system or received fr
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| [`gen_ai.agent.id`](/docs/attributes-registry/gen-ai.md) | string | The id of the agent that authored the message. | `asst_5j66UpCpwteGg4YSxUnt7lPY` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| [`gen_ai.message.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the message within a thread. | `msg_sLMd7grQfjFXgu5ZeHCXmBr7` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.agent.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the GenAI agent. | `asst_5j66UpCpwteGg4YSxUnt7lPY` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.message.id`](/docs/attributes-registry/gen-ai.md) | string | Identifies message sent to or received from Generative AI model or agent. [1] | `msg_sLMd7grQfjFXgu5ZeHCXmBr7`; `chatcmpl-123` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.message.status`](/docs/attributes-registry/gen-ai.md) | string | The status of the message at the time event is reported. | `in_progress`; `completed`; `incomplete` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [1] | `openai` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [2] | `openai` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.thread.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread. | `thread_ggguJ0iZXRPjUnCy9vT9Fdvs` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| [`gen_ai.thread.run.id`](/docs/attributes-registry/gen-ai.md) | string | The id of the run that the message was created in. | `run_ep8IxBKdM06Mv338KNyo6EKP` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.thread.run.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread run. | `run_ep8IxBKdM06Mv338KNyo6EKP` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
-**[1]:** The `gen_ai.system` describes a family of GenAI models with specific model identified
+**[1]:** For inference operations such as `chat` or `text_completion`, it SHOULD be the completion identifier returned by the GenAI system and may not be unique if multiple choices are returned.
+If message history is managed by the application, agent, or framework, it SHOULD match the identifier used by the message history management system.
+
+**[2]:** The `gen_ai.system` describes a family of GenAI models with specific model identified
 by `gen_ai.request.model` and `gen_ai.response.model` attributes.
 
 The actual GenAI product may differ from the one identified by the client.
@@ -208,7 +216,11 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 
 | Body Field  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| `content` | undefined | The contents of the tool message. | `The weather in Paris is rainy and overcast, with temperatures around 57°F` | `Opt-In` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `content`: | map | The contents of the assistant message. |  | `Opt-In` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| &nbsp;&nbsp;`text`: | map | The text content of the message. |  | `Recommended` if available | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| &nbsp;&nbsp;&nbsp;&nbsp;`annotations` | undefined | Annotations returned by the assistant for the text content. |  | `Recommended` if available | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| &nbsp;&nbsp;&nbsp;&nbsp;`value` | string | The actual text content of the message. | `The weather in Paris is rainy and overcast, with temperatures around 57°F` | `Opt-In` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `incomplete_details` | undefined | On an incomplete message, details about why the message is incomplete. |  | `Conditionally Required` if available | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `role` | string | The actual role of the message author as passed in the message. | `assistant`; `bot` | `Conditionally Required` if available and not equal to `assistant`. | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `tool_calls`: | map | The tool calls generated by the model, such as function calls. |  | `Conditionally Required` if available | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | &nbsp;&nbsp;`function`: | map | The function call. |  | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
@@ -248,10 +260,10 @@ This event describes the tool or function response message.
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| [`gen_ai.message.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the message within a thread. | `msg_sLMd7grQfjFXgu5ZeHCXmBr7` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.agent.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the GenAI agent. | `asst_5j66UpCpwteGg4YSxUnt7lPY` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [1] | `openai` | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.thread.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread. | `thread_ggguJ0iZXRPjUnCy9vT9Fdvs` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| [`gen_ai.thread.run.id`](/docs/attributes-registry/gen-ai.md) | string | The id of the run that the tool is being executed in. | `run_ep8IxBKdM06Mv338KNyo6EKP` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.thread.run.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread run. | `run_ep8IxBKdM06Mv338KNyo6EKP` | `Recommended` if applicable | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
 **[1]:** The `gen_ai.system` describes a family of GenAI models with specific model identified
 by `gen_ai.request.model` and `gen_ai.response.model` attributes.
@@ -332,6 +344,7 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 | `finish_reason` | enum | The reason the model stopped generating tokens. | `stop`; `tool_calls`; `content_filter` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `index` | int | The index of the choice in the list of choices. | `0`; `1` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `message`: | map | GenAI response message. |  | `Recommended` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| &nbsp;&nbsp;`attachments` | undefined | The list of message attachments. |  | `Conditionally Required` if available | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | &nbsp;&nbsp;`content` | undefined | The contents of the assistant message. | `The weather in Paris is rainy and overcast, with temperatures around 57°F` | `Opt-In` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | &nbsp;&nbsp;`role` | string | The actual role of the message author as passed in the message. | `assistant`; `bot` | `Conditionally Required` if available and not equal to `assistant`. | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `tool_calls`: | map | The tool calls generated by the model, such as function calls. |  | `Conditionally Required` if available | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
@@ -401,9 +414,9 @@ sequenceDiagram
 | Span name                       | `"chat gpt-4"`                             |
 | `gen_ai.system`                 | `"openai"`                                 |
 | `gen_ai.request.model`          | `"gpt-4"`                                  |
-| `gen_ai.request.max_tokens`     | `200`                                      |
+| `gen_ai.request.max_output_tokens`| `200`                                    |
 | `gen_ai.request.top_p`          | `1.0`                                      |
-| `gen_ai.response.id`            | `"chatcmpl-9J3uIL87gldCFtiIbyaOvTeYBRA3l"` |
+| `gen_ai.message.id`            | `"chatcmpl-9J3uIL87gldCFtiIbyaOvTeYBRA3l"` |
 | `gen_ai.response.model`         | `"gpt-4-0613"`                             |
 | `gen_ai.usage.output_tokens`    | `47`                                       |
 | `gen_ai.usage.input_tokens`     | `52`                                       |
@@ -472,9 +485,9 @@ Here's the telemetry generated for each step in this scenario:
 | Span name           | `"chat gpt-4"`                             |
 | `gen_ai.system`     | `"openai"`                                            |
 | `gen_ai.request.model`| `"gpt-4"`                                           |
-| `gen_ai.request.max_tokens`| `200`                                          |
+| `gen_ai.request.max_output_tokens`| `200`                                   |
 | `gen_ai.request.top_p`| `1.0`                                               |
-| `gen_ai.response.id`| `"chatcmpl-9J3uIL87gldCFtiIbyaOvTeYBRA3l"`            |
+| `gen_ai.message.id`| `"chatcmpl-9J3uIL87gldCFtiIbyaOvTeYBRA3l"`            |
 | `gen_ai.response.model`| `"gpt-4-0613"`                                     |
 | `gen_ai.usage.output_tokens`| `17`                                          |
 | `gen_ai.usage.input_tokens`| `47`                                           |
@@ -506,9 +519,9 @@ Here's the telemetry generated for each step in this scenario:
    | Span name                       | `"chat gpt-4"`                                        |
    | `gen_ai.system`                 | `"openai"`                                            |
    | `gen_ai.request.model`          | `"gpt-4"`                                             |
-   | `gen_ai.request.max_tokens`     | `200`                                                 |
+   | `gen_ai.request.max_output_tokens` | `200`                                              |
    | `gen_ai.request.top_p`          | `1.0`                                                 |
-   | `gen_ai.response.id`            | `"chatcmpl-call_VSPygqKTWdrhaFErNvMV18Yl"`            |
+   | `gen_ai.message.id`            | `"chatcmpl-call_VSPygqKTWdrhaFErNvMV18Yl"`            |
    | `gen_ai.response.model`         | `"gpt-4-0613"`                                        |
    | `gen_ai.usage.output_tokens`    | `52`                                                  |
    | `gen_ai.usage.input_tokens`     | `47`                                                  |
@@ -580,9 +593,9 @@ sequenceDiagram
 | Span name           | `"chat gpt-4"`                             |
 | `gen_ai.system`     | `"openai"`                                 |
 | `gen_ai.request.model`| `"gpt-4"`                                |
-| `gen_ai.request.max_tokens`| `200`                               |
+| `gen_ai.request.max_output_tokens`| `200`                        |
 | `gen_ai.request.top_p`| `1.0`                                    |
-| `gen_ai.response.id`| `"chatcmpl-9J3uIL87gldCFtiIbyaOvTeYBRA3l"` |
+| `gen_ai.message.id`| `"chatcmpl-9J3uIL87gldCFtiIbyaOvTeYBRA3l"` |
 | `gen_ai.response.model`| `"gpt-4-0613"`                          |
 | `gen_ai.usage.output_tokens`| `77`                               |
 | `gen_ai.usage.input_tokens`| `52`                                |

@@ -61,7 +61,7 @@ This metric SHOULD be specified with [ExplicitBucketBoundaries] of [1, 4, 16, 64
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `chat`; `create_thread_run`; `thread_run` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `chat`; `text_completion`; `create_agent` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [2] | `openai` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.token.type`](/docs/attributes-registry/gen-ai.md) | string | The type of token being counted. | `input`; `output` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.request.model`](/docs/attributes-registry/gen-ai.md) | string | The name of the GenAI model a request is being made to. | `gpt-4` | `Conditionally Required` If available. | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
@@ -90,19 +90,29 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 | Value  | Description | Stability |
 |---|---|---|
 | `chat` | Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `create_thread_run` | Create a run on a thread [5] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `execute_tool` | Execute a tool | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `submit_tool_output` | Submit tool call results to a run | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_agent` | Create GenAI agent | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_message` | Create a message in a thread [5] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_thread` | Create GenAI thread | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `execute_tool` | Execute a tool [6] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `process_thread_run` | Create and process a thread run on the agent [7] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `start_thread_run` | Create thread run [8] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `submit_tool_outputs` | Submit tool calls results to a run [9] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `text_completion` | Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `thread_run` | Run a thread on an agent [6] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
-**[5]:** This operation describes creating a run. The run can consist of multiple steps (such as GenAI chat calls) which may be executed locally on the the client by a GenAI client framework or remotely on the GenAI agent.
-Unlike `run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
-Instrumentations SHOULD report `run` operation instead of `create_run` whenever possible.
+**[5]:** This operation SHOULD be used when message creation involves remote call to store this message, but does not result in model generating response. It SHOULD NOT be reported along with `chat`, `text_completion` or other inference operations.
 
-**[6]:** This operation describes creating and processing a thread run on an agent.
-The run can consist of multiple steps (such as GenAI chat calls) which may be executed locally on the the client by a GenAI client framework or remotely on the GenAI agent.
-The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs, or for operations that involve polling the status.
+**[6]:** This operation describes the tool execution which usually is a client operation performed by the application code.
+Instrumentations SHOULD record this operation when possible - for example, when they provide convenience methods for executing custom tools or provide built-in tools executed on the client side.
+
+**[7]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs and for operations that involve polling the run status.
+
+**[8]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+Unlike `process_thread_run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
+Instrumentations SHOULD report `process_thread_run` operation instead of `create_thread_run` whenever it is possible.
+
+**[9]:** This operation SHOULD be used when instrumentation can determine that application is submitting the tool call output to the model, for example, when this operation is reported in the context of agent thread run.
+When application is submitting the tool call output with the generic GenAI call such as `chat` or `text_completion`, the instrumentation SHOULD use the corresponding operation name since it cannot reliably determine the intent behind the generic GenAI call.
 
 `gen_ai.system` has the following list of well-known values. If one of them applies, then the respective value MUST be used; otherwise, a custom value MAY be used.
 
@@ -145,7 +155,7 @@ This metric SHOULD be specified with [ExplicitBucketBoundaries] of [0.01, 0.02, 
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `chat`; `create_thread_run`; `thread_run` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `chat`; `text_completion`; `create_agent` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [2] | `openai` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`error.type`](/docs/attributes-registry/error.md) | string | Describes a class of error the operation ended with. [3] | `timeout`; `java.net.UnknownHostException`; `server_certificate_invalid`; `500` | `Conditionally Required` if the operation ended in an error | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
 | [`gen_ai.request.model`](/docs/attributes-registry/gen-ai.md) | string | The name of the GenAI model a request is being made to. | `gpt-4` | `Conditionally Required` If available. | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
@@ -184,19 +194,29 @@ Instrumentations SHOULD document the list of errors they report.
 | Value  | Description | Stability |
 |---|---|---|
 | `chat` | Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `create_thread_run` | Create a run on a thread [6] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `execute_tool` | Execute a tool | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `submit_tool_output` | Submit tool call results to a run | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_agent` | Create GenAI agent | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_message` | Create a message in a thread [6] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_thread` | Create GenAI thread | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `execute_tool` | Execute a tool [7] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `process_thread_run` | Create and process a thread run on the agent [8] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `start_thread_run` | Create thread run [9] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `submit_tool_outputs` | Submit tool calls results to a run [10] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `text_completion` | Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `thread_run` | Run a thread on an agent [7] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
-**[6]:** This operation describes creating a run. The run can consist of multiple steps (such as GenAI chat calls) which may be executed locally on the the client by a GenAI client framework or remotely on the GenAI agent.
-Unlike `run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
-Instrumentations SHOULD report `run` operation instead of `create_run` whenever possible.
+**[6]:** This operation SHOULD be used when message creation involves remote call to store this message, but does not result in model generating response. It SHOULD NOT be reported along with `chat`, `text_completion` or other inference operations.
 
-**[7]:** This operation describes creating and processing a thread run on an agent.
-The run can consist of multiple steps (such as GenAI chat calls) which may be executed locally on the the client by a GenAI client framework or remotely on the GenAI agent.
-The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs, or for operations that involve polling the status.
+**[7]:** This operation describes the tool execution which usually is a client operation performed by the application code.
+Instrumentations SHOULD record this operation when possible - for example, when they provide convenience methods for executing custom tools or provide built-in tools executed on the client side.
+
+**[8]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs and for operations that involve polling the run status.
+
+**[9]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+Unlike `process_thread_run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
+Instrumentations SHOULD report `process_thread_run` operation instead of `create_thread_run` whenever it is possible.
+
+**[10]:** This operation SHOULD be used when instrumentation can determine that application is submitting the tool call output to the model, for example, when this operation is reported in the context of agent thread run.
+When application is submitting the tool call output with the generic GenAI call such as `chat` or `text_completion`, the instrumentation SHOULD use the corresponding operation name since it cannot reliably determine the intent behind the generic GenAI call.
 
 `gen_ai.system` has the following list of well-known values. If one of them applies, then the respective value MUST be used; otherwise, a custom value MAY be used.
 
@@ -239,7 +259,7 @@ This metric SHOULD be specified with [ExplicitBucketBoundaries] of
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `chat`; `create_thread_run`; `thread_run` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `chat`; `text_completion`; `create_agent` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [2] | `openai` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`error.type`](/docs/attributes-registry/error.md) | string | Describes a class of error the operation ended with. [3] | `timeout`; `java.net.UnknownHostException`; `server_certificate_invalid`; `500` | `Conditionally Required` if the operation ended in an error | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
 | [`gen_ai.request.model`](/docs/attributes-registry/gen-ai.md) | string | The name of the GenAI model a request is being made to. | `gpt-4` | `Conditionally Required` If available. | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
@@ -278,19 +298,29 @@ Instrumentations SHOULD document the list of errors they report.
 | Value  | Description | Stability |
 |---|---|---|
 | `chat` | Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `create_thread_run` | Create a run on a thread [6] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `execute_tool` | Execute a tool | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `submit_tool_output` | Submit tool call results to a run | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_agent` | Create GenAI agent | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_message` | Create a message in a thread [6] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_thread` | Create GenAI thread | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `execute_tool` | Execute a tool [7] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `process_thread_run` | Create and process a thread run on the agent [8] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `start_thread_run` | Create thread run [9] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `submit_tool_outputs` | Submit tool calls results to a run [10] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `text_completion` | Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `thread_run` | Run a thread on an agent [7] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
-**[6]:** This operation describes creating a run. The run can consist of multiple steps (such as GenAI chat calls) which may be executed locally on the the client by a GenAI client framework or remotely on the GenAI agent.
-Unlike `run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
-Instrumentations SHOULD report `run` operation instead of `create_run` whenever possible.
+**[6]:** This operation SHOULD be used when message creation involves remote call to store this message, but does not result in model generating response. It SHOULD NOT be reported along with `chat`, `text_completion` or other inference operations.
 
-**[7]:** This operation describes creating and processing a thread run on an agent.
-The run can consist of multiple steps (such as GenAI chat calls) which may be executed locally on the the client by a GenAI client framework or remotely on the GenAI agent.
-The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs, or for operations that involve polling the status.
+**[7]:** This operation describes the tool execution which usually is a client operation performed by the application code.
+Instrumentations SHOULD record this operation when possible - for example, when they provide convenience methods for executing custom tools or provide built-in tools executed on the client side.
+
+**[8]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs and for operations that involve polling the run status.
+
+**[9]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+Unlike `process_thread_run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
+Instrumentations SHOULD report `process_thread_run` operation instead of `create_thread_run` whenever it is possible.
+
+**[10]:** This operation SHOULD be used when instrumentation can determine that application is submitting the tool call output to the model, for example, when this operation is reported in the context of agent thread run.
+When application is submitting the tool call output with the generic GenAI call such as `chat` or `text_completion`, the instrumentation SHOULD use the corresponding operation name since it cannot reliably determine the intent behind the generic GenAI call.
 
 `gen_ai.system` has the following list of well-known values. If one of them applies, then the respective value MUST be used; otherwise, a custom value MAY be used.
 
@@ -333,7 +363,7 @@ This metric SHOULD be specified with [ExplicitBucketBoundaries] of
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `chat`; `create_thread_run`; `thread_run` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `chat`; `text_completion`; `create_agent` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [2] | `openai` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.request.model`](/docs/attributes-registry/gen-ai.md) | string | The name of the GenAI model a request is being made to. | `gpt-4` | `Conditionally Required` If available. | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`server.port`](/docs/attributes-registry/server.md) | int | GenAI server port. [3] | `80`; `8080`; `443` | `Conditionally Required` If `server.address` is set. | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
@@ -361,19 +391,29 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 | Value  | Description | Stability |
 |---|---|---|
 | `chat` | Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `create_thread_run` | Create a run on a thread [5] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `execute_tool` | Execute a tool | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `submit_tool_output` | Submit tool call results to a run | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_agent` | Create GenAI agent | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_message` | Create a message in a thread [5] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_thread` | Create GenAI thread | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `execute_tool` | Execute a tool [6] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `process_thread_run` | Create and process a thread run on the agent [7] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `start_thread_run` | Create thread run [8] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `submit_tool_outputs` | Submit tool calls results to a run [9] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `text_completion` | Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `thread_run` | Run a thread on an agent [6] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
-**[5]:** This operation describes creating a run. The run can consist of multiple steps (such as GenAI chat calls) which may be executed locally on the the client by a GenAI client framework or remotely on the GenAI agent.
-Unlike `run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
-Instrumentations SHOULD report `run` operation instead of `create_run` whenever possible.
+**[5]:** This operation SHOULD be used when message creation involves remote call to store this message, but does not result in model generating response. It SHOULD NOT be reported along with `chat`, `text_completion` or other inference operations.
 
-**[6]:** This operation describes creating and processing a thread run on an agent.
-The run can consist of multiple steps (such as GenAI chat calls) which may be executed locally on the the client by a GenAI client framework or remotely on the GenAI agent.
-The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs, or for operations that involve polling the status.
+**[6]:** This operation describes the tool execution which usually is a client operation performed by the application code.
+Instrumentations SHOULD record this operation when possible - for example, when they provide convenience methods for executing custom tools or provide built-in tools executed on the client side.
+
+**[7]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs and for operations that involve polling the run status.
+
+**[8]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+Unlike `process_thread_run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
+Instrumentations SHOULD report `process_thread_run` operation instead of `create_thread_run` whenever it is possible.
+
+**[9]:** This operation SHOULD be used when instrumentation can determine that application is submitting the tool call output to the model, for example, when this operation is reported in the context of agent thread run.
+When application is submitting the tool call output with the generic GenAI call such as `chat` or `text_completion`, the instrumentation SHOULD use the corresponding operation name since it cannot reliably determine the intent behind the generic GenAI call.
 
 `gen_ai.system` has the following list of well-known values. If one of them applies, then the respective value MUST be used; otherwise, a custom value MAY be used.
 
@@ -415,7 +455,7 @@ This metric SHOULD be specified with [ExplicitBucketBoundaries] of
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `chat`; `create_thread_run`; `thread_run` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| [`gen_ai.operation.name`](/docs/attributes-registry/gen-ai.md) | string | The name of the operation being performed. [1] | `chat`; `text_completion`; `create_agent` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.system`](/docs/attributes-registry/gen-ai.md) | string | The Generative AI product as identified by the client or server instrumentation. [2] | `openai` | `Required` | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`gen_ai.request.model`](/docs/attributes-registry/gen-ai.md) | string | The name of the GenAI model a request is being made to. | `gpt-4` | `Conditionally Required` If available. | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | [`server.port`](/docs/attributes-registry/server.md) | int | GenAI server port. [3] | `80`; `8080`; `443` | `Conditionally Required` If `server.address` is set. | ![Stable](https://img.shields.io/badge/-stable-lightgreen) |
@@ -443,19 +483,29 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 | Value  | Description | Stability |
 |---|---|---|
 | `chat` | Chat completion operation such as [OpenAI Chat API](https://platform.openai.com/docs/api-reference/chat) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `create_thread_run` | Create a run on a thread [5] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `execute_tool` | Execute a tool | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `submit_tool_output` | Submit tool call results to a run | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_agent` | Create GenAI agent | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_message` | Create a message in a thread [5] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `create_thread` | Create GenAI thread | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `execute_tool` | Execute a tool [6] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `process_thread_run` | Create and process a thread run on the agent [7] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `start_thread_run` | Create thread run [8] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
+| `submit_tool_outputs` | Submit tool calls results to a run [9] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 | `text_completion` | Text completions operation such as [OpenAI Completions API (Legacy)](https://platform.openai.com/docs/api-reference/completions) | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
-| `thread_run` | Run a thread on an agent [6] | ![Experimental](https://img.shields.io/badge/-experimental-blue) |
 
-**[5]:** This operation describes creating a run. The run can consist of multiple steps (such as GenAI chat calls) which may be executed locally on the the client by a GenAI client framework or remotely on the GenAI agent.
-Unlike `run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
-Instrumentations SHOULD report `run` operation instead of `create_run` whenever possible.
+**[5]:** This operation SHOULD be used when message creation involves remote call to store this message, but does not result in model generating response. It SHOULD NOT be reported along with `chat`, `text_completion` or other inference operations.
 
-**[6]:** This operation describes creating and processing a thread run on an agent.
-The run can consist of multiple steps (such as GenAI chat calls) which may be executed locally on the the client by a GenAI client framework or remotely on the GenAI agent.
-The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs, or for operations that involve polling the status.
+**[6]:** This operation describes the tool execution which usually is a client operation performed by the application code.
+Instrumentations SHOULD record this operation when possible - for example, when they provide convenience methods for executing custom tools or provide built-in tools executed on the client side.
+
+**[7]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+The instrumented operation SHOULD cover full duration of the run including time awaiting the final completion. It SHOULD be reported for streaming runs and for operations that involve polling the run status.
+
+**[8]:** The run may consist of multiple steps such as calls to model or tool calls which may be executed on the client side by the application or GenAI client framework or remotely on the GenAI agent.
+Unlike `process_thread_run` this operation covers the creation of the thread run and does not include time awaiting the completion of the run.
+Instrumentations SHOULD report `process_thread_run` operation instead of `create_thread_run` whenever it is possible.
+
+**[9]:** This operation SHOULD be used when instrumentation can determine that application is submitting the tool call output to the model, for example, when this operation is reported in the context of agent thread run.
+When application is submitting the tool call output with the generic GenAI call such as `chat` or `text_completion`, the instrumentation SHOULD use the corresponding operation name since it cannot reliably determine the intent behind the generic GenAI call.
 
 `gen_ai.system` has the following list of well-known values. If one of them applies, then the respective value MUST be used; otherwise, a custom value MAY be used.
 

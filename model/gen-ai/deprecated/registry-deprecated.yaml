@@ -28,3 +28,33 @@ groups:
         deprecated: "Removed, no replacement at this time."
         brief: "Deprecated, use Event API to report completions contents."
         examples: ["[{'role': 'assistant', 'content': 'The capital of France is Paris.'}]"]
+      - id: gen_ai.request.max_tokens
+        stability: experimental
+        type: int
+        brief: "Deprecated, use `gen_ai.request.max_tokens` instead."
+        deprecated: "Replaced by `gen_ai.request.max_completion_tokens` attribute."
+        examples: [42]
+      - id: gen_ai.openai.request.response_format
+        stability: experimental
+        type:
+          members:
+            - id: text
+              value: "text"
+              brief: 'Text response format'
+              stability: experimental
+            - id: json_object
+              value: "json_object"
+              brief: 'JSON object response format'
+              stability: experimental
+            - id: json_schema
+              value: "json_schema"
+              brief: 'JSON schema response format'
+              stability: experimental
+        brief: "Deprecated, use `gen_ai.request.response_format` instead."
+        deprecated: "Replaced by `gen_ai.request.response_format` attribute."
+      - id: gen_ai.response.id
+        stability: experimental
+        type: string
+        brief: "Deprecated, use `gen_ai.message.id` instead."
+        deprecated: "Replaced by `gen_ai.message.id` attribute."
+        examples: ['chatcmpl-123']
