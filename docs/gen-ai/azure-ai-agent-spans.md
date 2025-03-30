@@ -10,6 +10,7 @@ linkTitle: Agent spans
 
 <!-- toc -->
 
+- [Events](#events)
 - [Spans](#spans)
   - [Create agent span](#create-agent-span)
   - [Invoke Agent Span](#invoke-agent-span)
@@ -50,13 +51,14 @@ The semantic conventions for GenAI agents extend and override the semantic conve
 for [Gen AI Spans](gen-ai-spans.md).
 
 ## Events
+
 > [NOTE!]
 >
 > Since logs and events API is not stable in at least some languages including Python,
-> Azure AI Agent instrumentations MAY report [GenAI events](./gen-ai-events.md) on 
+> Azure AI Agent instrumentations MAY report [GenAI events](./gen-ai-events.md) on
 > span events instead.
 >
-> When span events are used, the event body MUST be reported as a JSON string on the 
+> When span events are used, the event body MUST be reported as a JSON string on the
 > `gen_ai.event.content` attribute.
 
 ## Spans

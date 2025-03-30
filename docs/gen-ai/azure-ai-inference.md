@@ -165,7 +165,6 @@ See [common embedding span definition](./gen-ai-spans.md#embeddings).
 > When span events are used, the event body MUST be reported as a JSON string on the
 > `gen_ai.event.content` attribute.
 
-
 ## Metrics
 
 Azure AI Inference metrics follow generic [Generative AI metrics](gen-ai-metrics.md).

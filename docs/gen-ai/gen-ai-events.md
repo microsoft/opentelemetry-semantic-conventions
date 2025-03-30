@@ -7,6 +7,7 @@ linkTitle: Events
 **Status**: [Development][DocumentStatus]
 
 <!-- toc -->
+
 - [Event: `gen_ai.system.message`](#event-gen_aisystemmessage)
 - [Event: `gen_ai.user.message`](#event-gen_aiusermessage)
 - [Event: `gen_ai.assistant.message`](#event-gen_aiassistantmessage)
@@ -46,10 +47,10 @@ Instrumentations MAY offer configuration options allowing to disable events or a
 > [NOTE!]
 >
 > Since logs and events API is not stable in at least some languages including Python,
-> Azure AI instrumentations MAY report [GenAI events](./gen-ai-events.md) on 
+> Azure AI instrumentations MAY report [GenAI events](./gen-ai-events.md) on
 > span events instead.
 >
-> When span events are used, the event body MUST be reported as a JSON string on the 
+> When span events are used, the event body MUST be reported as a JSON string on the
 > `gen_ai.event.content` attribute.
 
 ## Event: `gen_ai.system.message`
