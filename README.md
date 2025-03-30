@@ -21,4 +21,6 @@ provide meaning to data when collecting, producing and consuming it.
 > If you want to define semantic conventions for your projects unrelated to Azure AI,
 > please contribute them directly to OpenTelemetry.
 
+## Contributing
+
 See [CONTRIBUTING.md](https://github.com/open-telemetry/semantic-conventions/blob/main/CONTRIBUTING.md)
