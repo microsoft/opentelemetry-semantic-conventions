@@ -282,7 +282,7 @@ such as [LangGraph](https://github.com/langchain-ai/langgraph) or on the managed
 service such as [OpenAI Assistants](https://platform.openai.com/docs/assistants),
 [Azure AI Agents](TODO link), or [Amazon Bedrock Agents](https://aws.amazon.com/bedrock/agents/).
 
-Semantic conventions for agents and local composite scenarios are covered in the [GenAI agent spans](./gen-ai-agent-spans.md)
+Semantic conventions for agents and local composite scenarios are covered in the [GenAI agent spans](./azure-ai-agent-spans.md)
 document.
 
 [DocumentStatus]: https://opentelemetry.io/docs/specs/otel/document-status
