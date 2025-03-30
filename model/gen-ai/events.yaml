@@ -92,7 +92,7 @@ groups:
             - id: id
               type: string
               stability: experimental
-              brief:  The id of the attachment.
+              brief: The id of the attachment.
               examples: ["file_mszuSIzqtI65i1wAUOE8w5H4"]
               requirement_level:
                 recommended: if available
@@ -335,7 +335,7 @@ groups:
               requirement_level:
                 conditionally_required: if available and not equal to `assistant`.
             - id: attachments
-              type: undefined # TODO undefined[]
+              type: map[]
               stability: experimental
               brief: >
                 The list of message attachments.

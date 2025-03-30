@@ -523,4 +523,3 @@ groups:
         requirement_level: required
       - ref: gen_ai.thread.run.id
         requirement_level: required
-

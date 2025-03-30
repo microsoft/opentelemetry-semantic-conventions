@@ -1,0 +1,4 @@
+change_type: enhancement
+component: gen-ai
+note: Add Azure AI agents spans
+issues: [TODO]
