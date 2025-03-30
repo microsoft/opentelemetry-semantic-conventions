@@ -126,7 +126,6 @@ groups:
       - ref: gen_ai.usage.output_tokens
         brief: The number of tokens used in the completions from OpenAI.
 
-
   - id: span.gen_ai.az.ai.inference.client
     extends: attributes.gen_ai.openai_based
     stability: development

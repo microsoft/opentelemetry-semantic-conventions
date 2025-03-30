@@ -313,3 +313,18 @@ groups:
                     arguments field.
                   examples: ['{\"location\": \"Paris\"}']
                   requirement_level: opt_in
+
+  - id: event.gen_ai.evaluation.user_feedback
+    name: gen_ai.evaluation.user_feedback
+    type: event
+    stability: development
+    brief: >
+      This event describes the evaluation of GenAI response based on the user feedback.
+    attributes:
+      - ref: gen_ai.response.id
+        requirement_level: required
+      - ref: gen_ai.evaluation.score
+        brief: >
+          Quantified score calculated based on the user reaction in [-1.0, 1.0] range with 0 representing a neutral reaction.
+        note: ""
+        requirement_level: recommended
