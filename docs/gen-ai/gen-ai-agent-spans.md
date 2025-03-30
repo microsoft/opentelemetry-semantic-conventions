@@ -10,6 +10,7 @@ linkTitle: Generative AI traces
 
 <!-- toc -->
 
+- [Spans](#spans)
   - [Create agent span](#create-agent-span)
   - [Create thread span](#create-thread-span)
   - [Create message span](#create-message-span)
