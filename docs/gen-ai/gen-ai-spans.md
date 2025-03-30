@@ -214,6 +214,7 @@ When application is submitting the tool call output with the generic GenAI call 
 |---|---|---|
 | `anthropic` | Anthropic | ![Development](https://img.shields.io/badge/-development-blue) |
 | `aws.bedrock` | AWS Bedrock | ![Development](https://img.shields.io/badge/-development-blue) |
+| `az.ai.agents` | Azure AI Agents | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.inference` | Azure AI Inference | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -281,7 +282,7 @@ such as [LangGraph](https://github.com/langchain-ai/langgraph) or on the managed
 service such as [OpenAI Assistants](https://platform.openai.com/docs/assistants),
 [Azure AI Agents](TODO link), or [Amazon Bedrock Agents](https://aws.amazon.com/bedrock/agents/).
 
-Semantic conventions for agents and local composite scenarios are covered in the [GenAI agent spans](./gen-ai-agent-spans.md)
+Semantic conventions for agents and local composite scenarios are covered in the [GenAI agent spans](./azure-ai-agent-spans.md)
 document.
 
 [DocumentStatus]: https://opentelemetry.io/docs/specs/otel/document-status

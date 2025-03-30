@@ -403,7 +403,23 @@ groups:
       This event describes the evaluation of GenAI response based on the user feedback.
     attributes:
       - ref: gen_ai.response.id
-        requirement_level: required
+        requirement_level:
+          recommended: if applicable
+      - ref: gen_ai.message.id
+        requirement_level:
+          recommended: if applicable
+      - ref: gen_ai.thread.id
+        requirement_level:
+          recommended: if applicable
+      - ref: enduser.id
+        requirement_level:
+          recommended: if available
+      - ref: enduser.pseudo.id
+        requirement_level:
+          recommended: if available
+      - ref: session.id
+        requirement_level:
+          recommended: if available
       - ref: gen_ai.evaluation.score
         brief: >
           Quantified score calculated based on the user reaction in [-1.0, 1.0] range with 0 representing a neutral reaction.
