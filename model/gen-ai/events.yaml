@@ -335,7 +335,7 @@ groups:
               requirement_level:
                 conditionally_required: if available and not equal to `assistant`.
             - id: attachments
-              type: map[]
+              type: undefined
               stability: experimental
               brief: >
                 The list of message attachments.
