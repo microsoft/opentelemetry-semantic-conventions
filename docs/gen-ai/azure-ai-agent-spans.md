@@ -46,6 +46,16 @@ framework locally.
 The semantic conventions for GenAI agents extend and override the semantic conventions
 for [Gen AI Spans](gen-ai-spans.md).
 
+## Events
+> [NOTE!]
+>
+> Since logs and events API is not stable in at least some languages including Python,
+> Azure AI Agent instrumentations MAY report [GenAI events](./gen-ai-events.md) on 
+> span events instead.
+>
+> When span events are used, the event body MUST be reported as a JSON string on the 
+> `gen_ai.event.content` attribute.
+
 ## Spans
 
 ### Create agent span
@@ -156,6 +166,7 @@ If message history is managed by the application, agent, or framework, it SHOULD
 |---|---|---|
 | `anthropic` | Anthropic | ![Development](https://img.shields.io/badge/-development-blue) |
 | `aws.bedrock` | AWS Bedrock | ![Development](https://img.shields.io/badge/-development-blue) |
+| `az.ai.agents` | Azure AI Agents | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.inference` | Azure AI Inference | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -246,6 +257,7 @@ Instrumentations SHOULD document the list of errors they report.
 |---|---|---|
 | `anthropic` | Anthropic | ![Development](https://img.shields.io/badge/-development-blue) |
 | `aws.bedrock` | AWS Bedrock | ![Development](https://img.shields.io/badge/-development-blue) |
+| `az.ai.agents` | Azure AI Agents | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.inference` | Azure AI Inference | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -346,6 +358,7 @@ If message history is managed by the application, agent, or framework, it SHOULD
 |---|---|---|
 | `anthropic` | Anthropic | ![Development](https://img.shields.io/badge/-development-blue) |
 | `aws.bedrock` | AWS Bedrock | ![Development](https://img.shields.io/badge/-development-blue) |
+| `az.ai.agents` | Azure AI Agents | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.inference` | Azure AI Inference | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -456,6 +469,7 @@ Instrumentations SHOULD document the list of errors they report.
 |---|---|---|
 | `anthropic` | Anthropic | ![Development](https://img.shields.io/badge/-development-blue) |
 | `aws.bedrock` | AWS Bedrock | ![Development](https://img.shields.io/badge/-development-blue) |
+| `az.ai.agents` | Azure AI Agents | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.inference` | Azure AI Inference | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -585,6 +599,7 @@ Instrumentations SHOULD document the list of errors they report.
 |---|---|---|
 | `anthropic` | Anthropic | ![Development](https://img.shields.io/badge/-development-blue) |
 | `aws.bedrock` | AWS Bedrock | ![Development](https://img.shields.io/badge/-development-blue) |
+| `az.ai.agents` | Azure AI Agents | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.inference` | Azure AI Inference | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -749,6 +764,7 @@ Instrumentations SHOULD document the list of errors they report.
 |---|---|---|
 | `anthropic` | Anthropic | ![Development](https://img.shields.io/badge/-development-blue) |
 | `aws.bedrock` | AWS Bedrock | ![Development](https://img.shields.io/badge/-development-blue) |
+| `az.ai.agents` | Azure AI Agents | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.inference` | Azure AI Inference | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |

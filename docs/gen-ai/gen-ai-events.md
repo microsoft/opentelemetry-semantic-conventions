@@ -7,7 +7,6 @@ linkTitle: Events
 **Status**: [Development][DocumentStatus]
 
 <!-- toc -->
-
 - [Event: `gen_ai.system.message`](#event-gen_aisystemmessage)
 - [Event: `gen_ai.user.message`](#event-gen_aiusermessage)
 - [Event: `gen_ai.assistant.message`](#event-gen_aiassistantmessage)
@@ -43,6 +42,15 @@ Telemetry consumers SHOULD expect to receive unknown body fields.
 
 Instrumentations SHOULD NOT capture undocumented body fields and MUST follow the documented defaults for known fields.
 Instrumentations MAY offer configuration options allowing to disable events or allowing to capture all fields.
+
+> [NOTE!]
+>
+> Since logs and events API is not stable in at least some languages including Python,
+> Azure AI instrumentations MAY report [GenAI events](./gen-ai-events.md) on 
+> span events instead.
+>
+> When span events are used, the event body MUST be reported as a JSON string on the 
+> `gen_ai.event.content` attribute.
 
 ## Event: `gen_ai.system.message`
 
@@ -86,6 +94,7 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 |---|---|---|
 | `anthropic` | Anthropic | ![Development](https://img.shields.io/badge/-development-blue) |
 | `aws.bedrock` | AWS Bedrock | ![Development](https://img.shields.io/badge/-development-blue) |
+| `az.ai.agents` | Azure AI Agents | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.inference` | Azure AI Inference | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -157,6 +166,7 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 |---|---|---|
 | `anthropic` | Anthropic | ![Development](https://img.shields.io/badge/-development-blue) |
 | `aws.bedrock` | AWS Bedrock | ![Development](https://img.shields.io/badge/-development-blue) |
+| `az.ai.agents` | Azure AI Agents | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.inference` | Azure AI Inference | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -246,6 +256,7 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 |---|---|---|
 | `anthropic` | Anthropic | ![Development](https://img.shields.io/badge/-development-blue) |
 | `aws.bedrock` | AWS Bedrock | ![Development](https://img.shields.io/badge/-development-blue) |
+| `az.ai.agents` | Azure AI Agents | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.inference` | Azure AI Inference | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -336,6 +347,7 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 |---|---|---|
 | `anthropic` | Anthropic | ![Development](https://img.shields.io/badge/-development-blue) |
 | `aws.bedrock` | AWS Bedrock | ![Development](https://img.shields.io/badge/-development-blue) |
+| `az.ai.agents` | Azure AI Agents | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.inference` | Azure AI Inference | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -405,6 +417,7 @@ If none of these options apply, the `gen_ai.system` SHOULD be set to `_OTHER`.
 |---|---|---|
 | `anthropic` | Anthropic | ![Development](https://img.shields.io/badge/-development-blue) |
 | `aws.bedrock` | AWS Bedrock | ![Development](https://img.shields.io/badge/-development-blue) |
+| `az.ai.agents` | Azure AI Agents | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.inference` | Azure AI Inference | ![Development](https://img.shields.io/badge/-development-blue) |
 | `az.ai.openai` | Azure OpenAI | ![Development](https://img.shields.io/badge/-development-blue) |
 | `cohere` | Cohere | ![Development](https://img.shields.io/badge/-development-blue) |

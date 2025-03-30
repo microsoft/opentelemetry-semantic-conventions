@@ -7,41 +7,18 @@
 Semantic Conventions define a common set of (semantic) attributes which
 provide meaning to data when collecting, producing and consuming it.
 
-## Read the docs
-
-The human-readable version of the semantic conventions resides in the [docs](docs/README.md) folder.
-Major parts of these Markdown documents are generated from the YAML definitions located in the [model](model/README.md) folder.
-
-## Contributing
+> [!NOTE]
+>
+> This is a Microsoft fork of OpenTelemetry Semantic Conventions. 
+> It does NOT intend to replace OTel conventions and does NOT define any official
+> conventions.
+> 
+> It's intended for experimentation and prototyping large changes within a company 
+> before bringing them to the upstream repo. 
+> 
+> This repository is primarily used for draft Azure AI Inference and Agents conventions.
+> 
+> If you want to define semantic conventions for your projects unrelated to Azure AI, 
+> please contribute them directly to OpenTelemetry. 
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
-
-Approvers ([@open-telemetry/specs-semconv-approvers](https://github.com/orgs/open-telemetry/teams/specs-semconv-approvers)):
-
-- [Alexandra Konrad](https://github.com/trisch-me), Elastic
-- [Daniel Dyla](https://github.com/dyladan), Dynatrace
-- [Ted Young](https://github.com/tedsuo), Lightstep
-
-_Find more about the approver role in [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#approver)._
-
-Maintainers ([@open-telemetry/specs-semconv-maintainers](https://github.com/orgs/open-telemetry/teams/specs-semconv-maintainers)):
-
-- [Alexander Wert](https://github.com/AlexanderWert), Elastic
-- [Armin Ruech](https://github.com/arminru), Dynatrace
-- [Joao Grassi](https://github.com/joaopgrassi), Dynatrace
-- [Johannes Tax](https://github.com/pyohannes), Grafana Labs
-- [Josh Suereth](https://github.com/jsuereth), Google
-- [Liudmila Molkova](https://github.com/lmolkova), Microsoft
-- [Trask Stalnaker](https://github.com/trask), Microsoft
-
-Emeritus Approvers:
-
-- [Christian Neumüller](https://github.com/Oberon00)
-- [James Moessis](https://github.com/jamesmoessis)
-- [Sean Marciniak](https://github.com/MovieStoreGuy)
-
-Emeritus Maintainers:
-
-- [Reiley Yang](https://github.com/reyang)
-
-_Find more about the maintainer role in [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#maintainer)._
