@@ -9,6 +9,12 @@ versions:
             attribute_map:
               feature_flag.evaluation.reason: feature_flag.result.reason
               feature_flag.variant: feature_flag.result.variant
+        # https://github.com/open-telemetry/semantic-conventions/pull/TODO
+        - rename_attributes:
+            attribute_map:
+              gen_ai.request.max_tokens: gen_ai.request.max_output_tokens
+              gen_ai.response.id: gen_ai.message.id
+
   1.31.0:
     all:
       changes:

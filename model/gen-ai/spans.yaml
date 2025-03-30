@@ -1,10 +1,14 @@
 groups:
-  - id: trace.gen_ai.client.common_attributes
+  - id: trace.gen_ai.client.minimal_attributes
     type: attribute_group
     stability: development
     brief: >
-      Describes GenAI operation span.
+      Describes GenAI span that represents agent creation.
     attributes:
+      - ref: server.address
+        brief: GenAI server address.
+        requirement_level:
+          recommended: if available and if operation involves remote calls against GenAI service.
       - ref: gen_ai.request.model
         requirement_level:
           conditionally_required: If available.
@@ -12,9 +16,27 @@ groups:
             The name of the GenAI model a request is being made to. If the model is supplied by a vendor,
             then the value must be the exact name of the model requested. If the model is a fine-tuned
             custom model, the value should have a more specific name than the base model that's been fine-tuned.
-      - ref: gen_ai.operation.name
-        requirement_level: required
-      - ref: gen_ai.request.max_tokens
+      - ref: server.port
+        brief: GenAI server port.
+        requirement_level:
+          conditionally_required: If `server.address` is set.
+      - ref: error.type
+        requirement_level:
+          conditionally_required: "if the operation ended in an error"
+        note: |
+          The `error.type` SHOULD match the error code returned by the Generative AI provider or the client library,
+          the canonical name of exception that occurred, or another low-cardinality error identifier.
+          Instrumentations SHOULD document the list of errors they report.
+  - id: trace.gen_ai.client.common_attributes
+    type: attribute_group
+    stability: development
+    brief: >
+      Describes common GenAI attributes.
+    extends: trace.gen_ai.client.minimal_attributes
+    attributes:
+      - ref: gen_ai.request.max_input_tokens
+        requirement_level: recommended
+      - ref: gen_ai.request.max_output_tokens
         requirement_level: recommended
       - ref: gen_ai.request.choice.count
         requirement_level:
@@ -37,7 +59,7 @@ groups:
       - ref: gen_ai.output.type
         requirement_level:
           conditionally_required: when applicable and if the request includes an output format.
-      - ref: gen_ai.response.id
+      - ref: gen_ai.message.id
         requirement_level: recommended
       - ref: gen_ai.response.model
         requirement_level: recommended
@@ -51,36 +73,75 @@ groups:
         requirement_level: recommended
       - ref: gen_ai.usage.output_tokens
         requirement_level: recommended
-      - ref: server.address
-        brief: GenAI server address.
-        requirement_level: recommended
-      - ref: server.port
-        brief: GenAI server port.
+  - id: trace.gen_ai.client.common_and_agent_attributes
+    type: attribute_group
+    stability: development
+    brief: >
+      Describes GenAI operation span.
+    extends: trace.gen_ai.client.common_attributes
+    attributes:
+      - ref: gen_ai.agent.id
         requirement_level:
-          conditionally_required: If `server.address` is set.
-      - ref: error.type
+          recommended: |
+            If available.
+
+            `gen_ai.agent.id` is usually available on the spans that describe operations
+            performed on the agent such as `create_agent` or `process_thread_run`.
+
+            Instrumentations of the low level GenAI inference operations such as
+            `chat` or `text_completion` done by the lower-level clients usually
+            don't have agent id available. If it's available, it SHOULD be set.
+      - ref: gen_ai.agent.name
         requirement_level:
-          conditionally_required: "if the operation ended in an error"
-        note: |
-          The `error.type` SHOULD match the error code returned by the Generative AI provider or the client library,
-          the canonical name of exception that occurred, or another low-cardinality error identifier.
-          Instrumentations SHOULD document the list of errors they report.
+          recommended: |
+            If available.
+
+            Agent name is usually available only on the agent-related operations
+            such as `create_agent`.
+      - ref: gen_ai.agent.description
+        requirement_level:
+          recommended: |
+            If available.
+
+            Agent name is usually available only on the agent-related operations
+            such as `create_agent`.
+      - ref: gen_ai.thread.id
+        requirement_level:
+          recommended: |
+            If available.
+
+            `gen_ai.thread.id` is usually available on the spans that describe operations
+            performed on the thread such as `create_thread` or `process_thread_run`.
+
+            Instrumentations of the low level GenAI inference operations such as
+            `chat` or `text_completion` done by the lower-level clients usually
+            don't have thread id available. If it's available, it SHOULD be set.
+      - ref: gen_ai.thread.run.id
+        requirement_level:
+          recommended: |
+            If available.
+
+            `gen_ai.thread.run.id` is usually available on the spans that describe
+            thread runs such as `process_thread_run` or `start_thread_run`.
+
+            Instrumentations of the low level GenAI inference operations such as
+            `chat` or `text_completion` done by the lower-level clients usually
+            don't have thread run id available. If it's available, it SHOULD be set.
   - id: span.gen_ai.client
     type: span
     stability: development
     span_kind: client
     brief: >
       Describes GenAI operation span.
-    extends: trace.gen_ai.client.common_attributes
+    extends: trace.gen_ai.client.common_and_agent_attributes
     attributes:
       - ref: gen_ai.system
         # TODO: Not adding to trace.gen_ai.client.common_attributes because of https://github.com/open-telemetry/build-tools/issues/192
         requirement_level: required
       - ref: gen_ai.request.top_k
         requirement_level: recommended
-    events:
-      - gen_ai.content.prompt
-      - gen_ai.content.completion
+      - ref: gen_ai.operation.name
+        requirement_level: required
 
   - id: attributes.gen_ai.openai_based
     extends: trace.gen_ai.client.common_attributes
@@ -113,6 +174,14 @@ groups:
     attributes:
       - ref: gen_ai.request.model
         requirement_level: required
+      - ref: gen_ai.operation.name
+        requirement_level: required
+      - ref: gen_ai.request.seed
+        requirement_level:
+          conditionally_required: if the request includes a seed
+      - ref: gen_ai.output.type
+        requirement_level:
+          conditionally_required: if the request includes a response_format
       - ref: gen_ai.openai.request.service_tier
         requirement_level:
           conditionally_required: if the request includes a service_tier and the value is not 'auto'
@@ -134,6 +203,8 @@ groups:
     brief: >
       Describes Azure AI Inference span attributes.
     attributes:
+      - ref: gen_ai.operation.name
+        requirement_level: required
       - ref: az.namespace
         note: >
           When `az.namespace` attribute is populated, it MUST be set to `Microsoft.CognitiveServices` for all
@@ -187,6 +258,27 @@ groups:
         requirement_level:
           conditionally_required: If provided by the application.
 
+  - id: span.gen_ai.create_thread.client
+    type: span
+    span_kind: client
+    stability: development
+    brief: >
+      Describes creation of the thread on the GenAI agent and is usually applicable
+      when working with remote agent or history management services.
+    note: |
+      The `gen_ai.operation.name` MUST be `create_thread`.
+
+      The **span name** SHOULD be `create_thread`.
+      Semantic conventions for individual GenAI systems and frameworks MAY specify
+      different span name format.
+    extends: trace.gen_ai.client.minimal_attributes
+    attributes:
+      - ref: gen_ai.system
+        requirement_level: required
+      - ref: gen_ai.thread.id
+        requirement_level:
+          conditionally_required: if available
+
   - id: span.gen_ai.execute_tool.internal
     type: span
     stability: development
@@ -196,13 +288,17 @@ groups:
       `gen_ai.operation.name` SHOULD be `execute_tool`.
       Span name SHOULD be `execute_tool {gen_ai.tool.name}`.
       GenAI instrumentations that are able to instrument tool execution call SHOULD do so.
+
       However, it's common for tools to be executed by the application code. It's recommended
       for the application developers to follow this semantic conventions for tool invoked
       by the application code.
+
     attributes:
+      - ref: gen_ai.tool.call.id
+        requirement_level: recommended
       - ref: gen_ai.tool.name
         requirement_level: recommended
-      - ref: gen_ai.tool.call.id
+      - ref: gen_ai.thread.run.id
         requirement_level:
           recommended: if available
       - ref: error.type
@@ -212,3 +308,195 @@ groups:
           The `error.type` SHOULD match the error code returned by the Generative AI provider or the client library,
           the canonical name of exception that occurred, or another low-cardinality error identifier.
           Instrumentations SHOULD document the list of errors they report.
+
+  - id: span.gen_ai.create_message.client
+    type: span
+    span_kind: client
+    stability: development
+    brief: Describes creation of the message on the GenAI agent is usually applicable
+      when working with remote agent or history management services.
+    note: |
+      The `gen_ai.operation.name` MUST be `create_message`.
+
+      The **span name** SHOULD be `create_message`.
+      Semantic conventions for individual GenAI systems and frameworks MAY specify
+      different span name format.
+    extends: trace.gen_ai.client.minimal_attributes
+    attributes:
+      - ref: gen_ai.system
+        requirement_level: required
+      - ref: gen_ai.thread.id
+        requirement_level:
+          conditionally_required: if available
+      - ref: gen_ai.message.id
+        requirement_level:
+          conditionally_required: if available
+
+  - id: span.gen_ai.process_thread_run.client
+    type: span
+    span_kind: client
+    stability: development
+    brief: >
+      Describes creation and full processing of the thread run on GenAI agent.
+      It's applicable for operations representing calls to remote GenAI agents or
+      logical operations performed by the GenAI framework or application code.
+    note:
+      The `gen_ai.operation.name` MUST be `process_thread_run`.
+
+      The **span name** SHOULD be `process_thread_run`.
+      Semantic conventions for individual GenAI systems and frameworks MAY specify
+      different span name format.
+
+      The span SHOULD be reported for streaming runs or for operations
+      that involve polling the run status and SHOULD cover full duration of the
+      run including tool calls and time awaiting the final completion.
+
+      Depending on the scenario and application code, this
+      may not be possible. In this case the span SHOULD cover the part that
+      instrumentation is able to capture and ensure that `gen_ai.thread.run.status`
+      attribute value reflects the last known status (`in_process`, `requires_action`,
+      etc).
+    extends: trace.gen_ai.client.minimal_attributes
+    attributes:
+      - ref: gen_ai.system
+        requirement_level: required
+      - ref: gen_ai.agent.id
+        requirement_level: required
+      - ref: gen_ai.thread.id
+        requirement_level: required
+      - ref: gen_ai.thread.run.id
+        requirement_level:
+          conditionally_required: if available
+      - ref: gen_ai.thread.run.status
+        requirement_level:
+          conditionally_required: if available
+      - ref: gen_ai.request.model
+        requirement_level:
+          conditionally_required: If provided by the application.
+      - ref: gen_ai.response.model
+        requirement_level:
+          conditionally_required: If provided by the application.
+      - ref: gen_ai.request.temperature
+        requirement_level:
+          conditionally_required: If provided by the application.
+      - ref: gen_ai.request.top_p
+        requirement_level:
+          conditionally_required: If provided by the application.
+      - ref: gen_ai.request.max_input_tokens
+        requirement_level:
+          conditionally_required: If provided by the application.
+      - ref: gen_ai.request.max_output_tokens
+        requirement_level:
+          conditionally_required: If provided by the application.
+      - ref: gen_ai.usage.input_tokens
+        brief: >
+          The number of input tokens for the whole run
+        requirement_level:
+          conditionally_required: If available.
+      - ref: gen_ai.usage.output_tokens
+        brief: >
+          The number of output tokens for the whole run
+        requirement_level:
+          conditionally_required: If available.
+      - ref: gen_ai.thread.run.status
+        note: >
+          SHOULD capture the last known status of the thread run.
+        requirement_level:
+          conditionally_required: If run has started.
+
+  - id: span.gen_ai.start_thread_run.client
+    type: span
+    span_kind: client
+    stability: development
+    brief: >
+      Describes creation of the thread run on GenAI agent and is usually applicable
+      when working with remote agents.
+    note:
+      The `gen_ai.operation.name` MUST be `start_thread_run`.
+
+      The **span name** SHOULD be `start_thread_run`.
+
+      Semantic conventions for individual GenAI systems and frameworks MAY specify
+      different span name format.
+
+      This span SHOULD be reported when application is starting a run without awaiting
+      its completion. It SHOULD NOT be reported when instrumentation can capture the
+      full run processing. Full processing is covered by the
+      [Process thread run span](#process-thread-run-span).
+    extends: trace.gen_ai.client.minimal_attributes
+    attributes:
+      - ref: gen_ai.system
+        requirement_level: required
+      - ref: gen_ai.agent.id
+        requirement_level: required
+      - ref: gen_ai.thread.id
+        requirement_level: required
+      - ref: gen_ai.thread.run.id
+        requirement_level:
+          conditionally_required: if available
+      - ref: gen_ai.thread.run.status
+        requirement_level:
+          conditionally_required: if available
+      - ref: gen_ai.request.model
+        requirement_level:
+          conditionally_required: If provided by the application.
+      - ref: gen_ai.response.model
+        requirement_level:
+          conditionally_required: If provided by the application.
+      - ref: gen_ai.request.temperature
+        requirement_level:
+          conditionally_required: If provided by the application.
+      - ref: gen_ai.request.top_p
+        requirement_level:
+          conditionally_required: If provided by the application.
+      - ref: gen_ai.request.max_input_tokens
+        requirement_level:
+          conditionally_required: If provided by the application.
+      - ref: gen_ai.request.max_output_tokens
+        requirement_level:
+          conditionally_required: If provided by the application.
+      - ref: gen_ai.usage.input_tokens
+        brief: >
+          The number of input tokens for the whole run
+        requirement_level:
+          conditionally_required: If available.
+      - ref: gen_ai.usage.output_tokens
+        brief: >
+          The number of output tokens for the whole run
+        requirement_level:
+          conditionally_required: If available.
+      - ref: gen_ai.thread.run.status
+        note: >
+          SHOULD capture the last known status of the thread run.
+        requirement_level:
+          conditionally_required: If run has started.
+
+  - id: span.gen_ai.submit_tool_outputs.client
+    type: span
+    stability: development
+    span_kind: client
+    brief: >
+      Describes submission of the tool outputs to the GenAI agent and is usually applicable
+      when working with remote agents.
+    note:
+      The `gen_ai.operation.name` MUST be `submit_tool_outputs`.
+
+      The **span name** SHOULD be `submit_tool_outputs`.
+
+      Semantic conventions for individual GenAI systems and frameworks MAY specify
+      different span name format.
+
+      This span SHOULD be reported when instrumentation can determine that
+      application is submitting the tool call output to the model.
+
+      When application is submitting the tool call output with the generic GenAI call
+      such as `chat` or `text_completion`, the instrumentation SHOULD report generic
+      GenAI span since it cannot reliably determine the intent behind the generic GenAI call.
+    extends: trace.gen_ai.client.minimal_attributes
+    attributes:
+      - ref: gen_ai.system
+        requirement_level: required
+      - ref: gen_ai.thread.id
+        requirement_level: required
+      - ref: gen_ai.thread.run.id
+        requirement_level: required

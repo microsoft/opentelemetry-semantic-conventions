@@ -7,13 +7,30 @@ groups:
     attributes:
       - ref: gen_ai.system
 
+  - id: gen_ai.message.event.attributes
+    type: attribute_group
+    stability: experimental
+    brief: >
+      Describes Gen AI message event attributes.
+    extends: gen_ai.common.event.attributes
+    attributes:
+      - ref: gen_ai.thread.id
+        requirement_level:
+          recommended: if applicable
+      - ref: gen_ai.thread.run.id
+        requirement_level:
+          recommended: if applicable
+      - ref: gen_ai.agent.id
+        requirement_level:
+          recommended: if applicable
+
   - id: event.gen_ai.system.message
     name: gen_ai.system.message
     type: event
     stability: development
     brief: >
       This event describes the system instructions passed to the GenAI model.
-    extends: gen_ai.common.event.attributes
+    extends: gen_ai.message.event.attributes
     body:
       id: gen_ai.system.message
       requirement_level: opt_in
@@ -32,7 +49,7 @@ groups:
           stability: development
           brief: >
             The actual role of the message author as passed in the message.
-          examples: ["system", "instruction"]
+          examples: ["system", "agent"]
           requirement_level:
             conditionally_required: if available and not equal to `system`.
 
@@ -42,7 +59,7 @@ groups:
     stability: development
     brief: >
       This event describes the user message passed to the GenAI model.
-    extends: gen_ai.common.event.attributes
+    extends: gen_ai.message.event.attributes
     body:
       id: gen_ai.user.message
       requirement_level: opt_in
@@ -64,6 +81,29 @@ groups:
           examples: ["user", "customer"]
           requirement_level:
             conditionally_required: if available and not equal to `user`.
+        - id: attachments
+          stability: experimental
+          brief: >
+            The list of message attachments to be used by tools.
+          requirement_level:
+            recommended: if available
+          type: map[]
+          fields:
+            - id: id
+              type: string
+              stability: experimental
+              brief: The id of the attachment.
+              examples: ["file_mszuSIzqtI65i1wAUOE8w5H4"]
+              requirement_level:
+                recommended: if available
+            - id: tools
+              stability: experimental
+              brief: The types of the tools the attachment is provided for
+              requirement_level:
+                recommended: if available
+              type: string[]
+              examples:
+                - ["file_search"]
 
   - id: event.gen_ai.assistant.message
     name: gen_ai.assistant.message
@@ -71,7 +111,16 @@ groups:
     stability: development
     brief: >
       This event describes the assistant message passed to GenAI system.
-    extends: gen_ai.common.event.attributes
+    extends: gen_ai.message.event.attributes
+    attributes:
+      - ref: gen_ai.message.status
+        brief: >
+          The status of the message at the time event is reported.
+        requirement_level:
+          recommended: if applicable
+      - ref: gen_ai.message.id
+        requirement_level:
+          recommended: if applicable
     body:
       id: gen_ai.assistant.message
       requirement_level: opt_in
@@ -79,12 +128,30 @@ groups:
       type: map
       fields:
         - id: content
-          type: undefined
-          stability: development
-          brief: >
-            The contents of the tool message.
-          examples: ["The weather in Paris is rainy and overcast, with temperatures around 57°F"]
+          stability: experimental
+          brief: The contents of the assistant message.
           requirement_level: opt_in
+          type: map
+          fields:
+            - id: text
+              stability: experimental
+              brief: The text content of the message.
+              requirement_level:
+                recommended: if available
+              type: map
+              fields:
+                - id: value
+                  stability: experimental
+                  brief: The actual text content of the message.
+                  requirement_level: opt_in
+                  type: string
+                  examples: ["The weather in Paris is rainy and overcast, with temperatures around 57°F"]
+                - id: annotations
+                  stability: experimental
+                  brief: Annotations returned by the assistant for the text content.
+                  requirement_level:
+                    recommended: if available
+                  type: undefined
         - id: role
           type: string
           stability: development
@@ -93,6 +160,13 @@ groups:
           examples: ["assistant", "bot"]
           requirement_level:
             conditionally_required: if available and not equal to `assistant`.
+        - id: incomplete_details
+          type: undefined
+          stability: experimental
+          brief: >
+            On an incomplete message, details about why the message is incomplete.
+          requirement_level:
+            conditionally_required: if available
         - id: tool_calls
           type: map[]
           stability: development
@@ -154,7 +228,7 @@ groups:
     stability: development
     brief: >
       This event describes the response from a tool or function call passed to the GenAI model.
-    extends: gen_ai.common.event.attributes
+    extends: gen_ai.message.event.attributes
     body:
       id: gen_ai.tool.message
       requirement_level: opt_in
@@ -260,6 +334,13 @@ groups:
               examples: ["assistant", "bot"]
               requirement_level:
                 conditionally_required: if available and not equal to `assistant`.
+            - id: attachments
+              type: undefined
+              stability: experimental
+              brief: >
+                The list of message attachments.
+              requirement_level:
+                conditionally_required: if available
         - id: tool_calls
           type: map[]
           stability: development
