@@ -9,7 +9,7 @@ provide meaning to data when collecting, producing and consuming it.
 
 > [!NOTE]
 >
-> This is a Microsoft fork of OpenTelemetry Semantic Conventions.
+> This is a Microsoft fork of [OpenTelemetry Semantic Conventions](https://github.com/open-telemetry/semantic-conventions).
 > It does NOT intend to replace OTel conventions and does NOT define any official
 > conventions.
 >
@@ -21,4 +21,4 @@ provide meaning to data when collecting, producing and consuming it.
 > If you want to define semantic conventions for your projects unrelated to Azure AI,
 > please contribute them directly to OpenTelemetry.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+See [CONTRIBUTING.md](https://github.com/open-telemetry/semantic-conventions/blob/main/CONTRIBUTING.md)
