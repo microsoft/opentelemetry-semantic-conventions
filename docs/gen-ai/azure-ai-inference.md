@@ -154,6 +154,18 @@ When application is submitting the tool call output with the generic GenAI call 
 
 See [common embedding span definition](./gen-ai-spans.md#embeddings).
 
+## Events
+
+> [NOTE!]
+>
+> Since logs and events API is not stable in at least some languages including Python,
+> Azure AI Inference instrumentations MAY report [GenAI events](./gen-ai-events.md) on
+> span events instead.
+>
+> When span events are used, the event body MUST be reported as a JSON string on the
+> `gen_ai.event.content` attribute.
+
+
 ## Metrics
 
 Azure AI Inference metrics follow generic [Generative AI metrics](gen-ai-metrics.md).

@@ -36,8 +36,26 @@ This event describes the evaluation of GenAI response based on the user feedback
 
 | Attribute  | Type | Description  | Examples  | [Requirement Level](https://opentelemetry.io/docs/specs/semconv/general/attribute-requirement-level/) | Stability |
 |---|---|---|---|---|---|
-| [`gen_ai.response.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier for the completion. | `chatcmpl-123` | `Required` | ![Development](https://img.shields.io/badge/-development-blue) |
+| [`enduser.id`](/docs/attributes-registry/enduser.md) | string | Unique identifier of an end user in the system. It maybe a username, email address, or other identifier. [1] | `username` | `Recommended` if available | ![Development](https://img.shields.io/badge/-development-blue) |
+| [`enduser.pseudo.id`](/docs/attributes-registry/enduser.md) | string | Pseudonymous identifier of an end user. This identifier should be a random value that is not directly linked or associated with the end user's actual identity. [2] | `QdH5CAWJgqVT4rOr0qtumf` | `Recommended` if available | ![Development](https://img.shields.io/badge/-development-blue) |
 | [`gen_ai.evaluation.score`](/docs/attributes-registry/gen-ai.md) | double | Quantified score calculated based on the user reaction in [-1.0, 1.0] range with 0 representing a neutral reaction. | `0.42` | `Recommended` | ![Development](https://img.shields.io/badge/-development-blue) |
+| [`gen_ai.message.id`](/docs/attributes-registry/gen-ai.md) | string | Identifies message sent to or received from Generative AI model or agent. [3] | `msg_sLMd7grQfjFXgu5ZeHCXmBr7`; `chatcmpl-123` | `Recommended` if applicable | ![Development](https://img.shields.io/badge/-development-blue) |
+| [`gen_ai.response.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier for the completion. | `chatcmpl-123` | `Recommended` if applicable | ![Development](https://img.shields.io/badge/-development-blue) |
+| [`gen_ai.thread.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread. | `thread_ggguJ0iZXRPjUnCy9vT9Fdvs` | `Recommended` if applicable | ![Development](https://img.shields.io/badge/-development-blue) |
+| [`session.id`](/docs/attributes-registry/session.md) | string | A unique id to identify a session. | `00112233-4455-6677-8899-aabbccddeeff` | `Recommended` if available | ![Development](https://img.shields.io/badge/-development-blue) |
+
+**[1] `enduser.id`:** Unique identifier of an end user in the system.
+
+> [!Warning]
+> This field contains sensitive (PII) information.
+
+**[2] `enduser.pseudo.id`:** Pseudonymous identifier of an end user.
+
+> [!Warning]
+> This field contains sensitive (linkable PII) information.
+
+**[3] `gen_ai.message.id`:** For inference operations such as `chat` or `text_completion`, it SHOULD be the completion identifier returned by the GenAI system and may not be unique if multiple choices are returned.
+If message history is managed by the application, agent, or framework, it SHOULD match the identifier used by the message history management system.
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
@@ -49,5 +67,14 @@ The user feedback event body has the following structure:
 | Body Field | Type | Description | Examples | Requirement Level |
 |---|---|---|---|---|
 | `comment` | string | Additional details about the user feedback | `"I did not like it"` | `Opt-in` |
+
+> [NOTE!]
+>
+> Since logs and events API is not stable in at least some languages including Python,
+> Azure AI instrumentations and evaluators MAY report [GenAI events](./gen-ai-events.md) on 
+> span events instead.
+>
+> When span events are used, the event body MUST be reported as a JSON string on the 
+> `gen_ai.event.content` attribute.
 
 [DocumentStatus]: https://opentelemetry.io/docs/specs/otel/document-status
