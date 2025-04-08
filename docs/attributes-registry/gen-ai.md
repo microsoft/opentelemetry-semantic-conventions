@@ -184,9 +184,15 @@ This group defines attributes for OpenAI.
 
 | Attribute | Type | Description | Examples | Stability |
 |---|---|---|---|---|
+| <a id="gen-ai-evaluation-evaluator-name" href="#gen-ai-evaluation-evaluator-name">`gen_ai.evaluation.evaluator.name`</a> | string | The qualified name of the evaluator used to evaluate the GenAI response. | `azureml://registries/azureml/models/Relevance-Evaluator`; `azure.ai.evaluation.ToolCallAccuracyEvaluator` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-evaluation-metadata" href="#gen-ai-evaluation-metadata">`gen_ai.evaluation.metadata`</a> | string | Metadata associated with the evaluation. [13] | `{"evaluator_model": "gpt-4o", "max_tokens": 42}` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-evaluation-reason" href="#gen-ai-evaluation-reason">`gen_ai.evaluation.reason`</a> | string | A free-form reason for the assigned score provided by the evaluator. | `The response is factually accurate but lacks sufficient detail to fully address the question.` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-openai-request-service-tier" href="#gen-ai-openai-request-service-tier">`gen_ai.openai.request.service_tier`</a> | string | The service tier requested. May be a specific tier, default, or auto. | `auto`; `default` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-openai-response-service-tier" href="#gen-ai-openai-response-service-tier">`gen_ai.openai.response.service_tier`</a> | string | The service tier used for the response. | `scale`; `default` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-openai-response-system-fingerprint" href="#gen-ai-openai-response-system-fingerprint">`gen_ai.openai.response.system_fingerprint`</a> | string | A fingerprint to track any eventual change in the Generative AI environment. | `fp_44709d6fcb` | ![Development](https://img.shields.io/badge/-development-blue) |
+
+**[13] `gen_ai.evaluation.metadata`:** The structure is specific to the evaluator.
+If the metadata is structured, it is RECOMMENDED to provide it in a structured form using language-specific API. It can also be captured as a JSON string when structured API or data is not available.
 
 ---
 

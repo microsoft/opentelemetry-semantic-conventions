@@ -425,3 +425,33 @@ groups:
           Quantified score calculated based on the user reaction in [-1.0, 1.0] range with 0 representing a neutral reaction.
         note: ""
         requirement_level: recommended
+
+  - id: event.gen_ai.evaluation.result
+    name: gen_ai.evaluation.result
+    type: event
+    stability: development
+    brief: >
+      This event describes a generic GenAI response evaluation result.
+    attributes:
+      - ref: gen_ai.response.id
+        requirement_level:
+          recommended: if applicable
+      - ref: gen_ai.thread.id
+        requirement_level:
+          recommended: if applicable
+      - ref: gen_ai.thread.run.id
+        requirement_level:
+          recommended: if applicable
+      - ref: gen_ai.evaluation.score
+        brief: >
+          Quantified score calculated based on the user reaction in [-1.0, 1.0] range with 0 representing a neutral reaction.
+        note: ""
+        requirement_level:
+          conditionally_required: if evaluation completed successfully
+      - ref: error.type
+        requirement_level:
+          conditionally_required: if evaluation failed
+      - ref: gen_ai.evaluation.evaluator.name
+        requirement_level: required
+      - ref: gen_ai.evaluation.metadata
+      - ref: gen_ai.evaluation.reason

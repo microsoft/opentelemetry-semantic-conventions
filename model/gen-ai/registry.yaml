@@ -472,3 +472,24 @@ groups:
         type: string
         brief: A fingerprint to track any eventual change in the Generative AI environment.
         examples: ["fp_44709d6fcb"]
+      - id: gen_ai.evaluation.evaluator.name
+        stability: development
+        type: string
+        brief: The qualified name of the evaluator used to evaluate the GenAI response.
+        examples: ["azureml://registries/azureml/models/Relevance-Evaluator", "azure.ai.evaluation.ToolCallAccuracyEvaluator"]
+      - id: gen_ai.evaluation.reason
+        stability: development
+        type: string
+        brief: A free-form reason for the assigned score provided by the evaluator.
+        examples: ["The response is factually accurate but lacks sufficient detail to fully address the question."]
+      - id: gen_ai.evaluation.metadata
+        stability: development
+        type: string  #undefined
+        brief: Metadata associated with the evaluation.
+        note: >
+          The structure is specific to the evaluator.
+
+          If the metadata is structured, it is RECOMMENDED to provide it in a structured
+          form using language-specific API. It can also be captured as a JSON string
+          when structured API or data is not available.
+        examples: ['{"evaluator_model": "gpt-4o", "max_tokens": 42}']
