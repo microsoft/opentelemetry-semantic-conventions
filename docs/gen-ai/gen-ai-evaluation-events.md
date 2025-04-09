@@ -93,7 +93,7 @@ This event describes a generic GenAI response evaluation result.
 | [`gen_ai.response.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier for the completion. | `chatcmpl-123` | `Conditionally Required` if applicable | ![Development](https://img.shields.io/badge/-development-blue) |
 | [`gen_ai.thread.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread. | `thread_ggguJ0iZXRPjUnCy9vT9Fdvs` | `Conditionally Required` if applicable | ![Development](https://img.shields.io/badge/-development-blue) |
 | [`gen_ai.thread.run.id`](/docs/attributes-registry/gen-ai.md) | string | The unique identifier of the thread run. | `run_ep8IxBKdM06Mv338KNyo6EKP` | `Conditionally Required` if applicable | ![Development](https://img.shields.io/badge/-development-blue) |
-| [`gen_ai.evaluation.input.metadata`](/docs/attributes-registry/gen-ai.md) | string | Metadata associated with the evaluation input. [2] | `{"evaluator_model": "gpt-4o", "max_tokens": 42}` | `Recommended` | ![Development](https://img.shields.io/badge/-development-blue) |
+| [`gen_ai.evaluation.input.metadata`](/docs/attributes-registry/gen-ai.md) | string | Metadata associated with the evaluation input. [2] | `{\"requestId\": \"fab3ee5d-a3c6-4c47-b3de-901bf02fa045\"}` | `Recommended` | ![Development](https://img.shields.io/badge/-development-blue) |
 | [`gen_ai.evaluation.output.metadata`](/docs/attributes-registry/gen-ai.md) | string | Metadata associated with the evaluation result. [3] | `{\"Perplexity\": 1.335}` | `Recommended` | ![Development](https://img.shields.io/badge/-development-blue) |
 | [`gen_ai.evaluation.reasoning`](/docs/attributes-registry/gen-ai.md) | string | A free-form reasoning for the assigned score provided by the evaluator. | `The response is factually accurate but lacks sufficient detail to fully address the question.` | `Recommended` | ![Development](https://img.shields.io/badge/-development-blue) |
 | [`gen_ai.usage.input_tokens`](/docs/attributes-registry/gen-ai.md) | int | The total number of input tokens used by the model during the evaluation. | `100` | `Recommended` if evaluation was performed by the model | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -121,9 +121,13 @@ it's RECOMMENDED to:
 
 **[2] `gen_ai.evaluation.input.metadata`:** The structure is specific to the evaluator.
 If the metadata is structured, it is RECOMMENDED to provide it in a structured form using language-specific API. It can also be captured as a JSON string when structured API is not available.
+If metadata properties contain any sensitive information such as prompts or completions, corresponding properties MUST NOT be recorded by default.
+Instrumentations MAY provide a way to override this behavior and record sensitive information in the metadata if user explicitly allows it.
 
 **[3] `gen_ai.evaluation.output.metadata`:** The structure is specific to the evaluator.
 If the metadata is structured, it is RECOMMENDED to provide it in a structured form using language-specific API. It can also be captured as a JSON string when structured API is not available.
+If metadata properties contain any sensitive information such as prompts or completions, corresponding properties MUST NOT be recorded by default.
+Instrumentations MAY provide a way to override this behavior and record sensitive information in the metadata if user explicitly allows it.
 
 ---
 
