@@ -197,9 +197,23 @@ This group defines attributes for OpenAI.
 
 | Attribute | Type | Description | Examples | Stability |
 |---|---|---|---|---|
+| <a id="gen-ai-evaluation-input-metadata" href="#gen-ai-evaluation-input-metadata">`gen_ai.evaluation.input.metadata`</a> | string | Metadata associated with the evaluation input. [17] | `{\"requestId\": \"fab3ee5d-a3c6-4c47-b3de-901bf02fa045\"}` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-evaluation-output-metadata" href="#gen-ai-evaluation-output-metadata">`gen_ai.evaluation.output.metadata`</a> | string | Metadata associated with the evaluation result. [18] | `{\"Perplexity\": 1.335}` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-evaluation-reasoning" href="#gen-ai-evaluation-reasoning">`gen_ai.evaluation.reasoning`</a> | string | A free-form reasoning for the assigned score provided by the evaluator. | `The response is factually accurate but lacks sufficient detail to fully address the question.` | ![Development](https://img.shields.io/badge/-development-blue) |
+| <a id="gen-ai-evaluator-name" href="#gen-ai-evaluator-name">`gen_ai.evaluator.name`</a> | string | The qualified name of the evaluator used to evaluate the GenAI response. | `azureml://registries/azureml/models/Relevance-Evaluator`; `azure.ai.evaluation.ToolCallAccuracyEvaluator` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-openai-request-service-tier" href="#gen-ai-openai-request-service-tier">`gen_ai.openai.request.service_tier`</a> | string | The service tier requested. May be a specific tier, default, or auto. | `auto`; `default` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-openai-response-service-tier" href="#gen-ai-openai-response-service-tier">`gen_ai.openai.response.service_tier`</a> | string | The service tier used for the response. | `scale`; `default` | ![Development](https://img.shields.io/badge/-development-blue) |
 | <a id="gen-ai-openai-response-system-fingerprint" href="#gen-ai-openai-response-system-fingerprint">`gen_ai.openai.response.system_fingerprint`</a> | string | A fingerprint to track any eventual change in the Generative AI environment. | `fp_44709d6fcb` | ![Development](https://img.shields.io/badge/-development-blue) |
+
+**[17] `gen_ai.evaluation.input.metadata`:** The structure is specific to the evaluator.
+If the metadata is structured, it is RECOMMENDED to provide it in a structured form using language-specific API. It can also be captured as a JSON string when structured API is not available.
+If metadata properties contain any sensitive information such as prompts or completions, corresponding properties MUST NOT be recorded by default.
+Instrumentations MAY provide a way to override this behavior and record sensitive information in the metadata if user explicitly allows it.
+
+**[18] `gen_ai.evaluation.output.metadata`:** The structure is specific to the evaluator.
+If the metadata is structured, it is RECOMMENDED to provide it in a structured form using language-specific API. It can also be captured as a JSON string when structured API is not available.
+If metadata properties contain any sensitive information such as prompts or completions, corresponding properties MUST NOT be recorded by default.
+Instrumentations MAY provide a way to override this behavior and record sensitive information in the metadata if user explicitly allows it.
 
 ---
 

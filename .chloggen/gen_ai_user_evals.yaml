@@ -1,4 +1,0 @@
-change_type: enhancement
-component: gen-ai
-note: Add `gen_ai.evaluation.user_feedback` event
-issues: [ 9999 ]
