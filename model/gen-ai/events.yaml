@@ -449,7 +449,7 @@ groups:
       - ref: error.type
         requirement_level:
           conditionally_required: if and only if evaluation failed
-      - ref: gen_ai.evaluation.evaluator.name
+      - ref: gen_ai.evaluator.name
         requirement_level: required
       - ref: gen_ai.usage.input_tokens
         brief: >
