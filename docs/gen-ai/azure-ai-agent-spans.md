@@ -14,8 +14,6 @@ linkTitle: Agent spans
 - [Spans](#spans)
   - [Create agent span](#create-agent-span)
   - [Invoke Agent Span](#invoke-agent-span)
-- [Agent execute tool span](#agent-execute-tool-span)
-  - [Create agent span](#create-agent-span)
   - [Create thread span](#create-thread-span)
   - [Create message span](#create-message-span)
   - [Start thread run span](#start-thread-run-span)
